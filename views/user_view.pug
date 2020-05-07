@@ -1,0 +1,23 @@
+extends ../layout/common.pug
+block content
+  .container.user_avatar
+    h1(class="mt-5 mb-5 pb-5") List Users
+    table.table.text-center
+      tr
+        th Avatar
+        th Name
+        th Action
+      each user, index in users
+       tr
+        th
+          img(src= user.avatarUrl)
+        th= user.name
+        th
+           a(href="/users/delete/"+ user.id, class="btn btn-danger") Xóa
+           a(href="/users/detail/"+ user.id, class="btn btn-primary ml-1") View
+           a(href="/users/update/"+ user.id, class="btn btn-warning ml-1") Update
+
+    div(class="mt-5 mb-5 btn btn-info")
+     a(class="text-white", href="/users/add") Thêm mới user
+    div(class="mt-1 mb-5")
+      a(class="", href="/books") Go back
