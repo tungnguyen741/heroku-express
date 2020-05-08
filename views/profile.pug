@@ -5,17 +5,16 @@ block content
 
  
   h4
-    each x in dataDetail 
+    each x in dataFinded 
       .mt-2.mb-2
-       img.avatar(src=x.avatarUrl) 
+      img.avatar(src= x.avatarUrl)
       p="Tên:  "+ x.name
       p="Tuổi:  "+ x.age
       p="Giới Tính:  "+ x.sex
   hr
-
   h2.text-danger Update User
-  each x in dataDetail  
-   form(class="form-group",action="/profile" , method="POST", enctype="multipart/form-data")
+  each x in dataFinded  
+   form(class="form-group",action="/users/update/" + x.id, method="POST", enctype="multipart/form-data")
           label Tên 
           input(class="form-control w-50",type="text", name="name")
           br
@@ -34,6 +33,6 @@ block content
           input(class="form-control-file w-50",type="file", name="avatar")
           br
           div
-          button(class="btn btn-danger mt-3") submit edit
+          button(class="btn btn-info mt-3") submit edit
        
 

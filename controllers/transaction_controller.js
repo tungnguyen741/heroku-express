@@ -23,20 +23,23 @@ module.exports.indexTransaction = async function(req, res) {
       });
       bookName.push(bookNameFind);
       amountBook.push(item.quantity);
+      statusBook.push(!bookNameFind)
     });
     res.render("transaction", {
       bookNameBorrow: bookName.flat(),
       sumItem: amountBook,
-      statusBook: ssArrFind
+      statusBook: statusBook 
     });
   }
   //ADMIN
+  var xxx = [];
   if (res.locals.user.isAdmin) {
     console.log("ADMINNNNNNNNNNNNNNN");
     transactions.forEach(item => {
       bookName.push(item.bookId);
       statusBook.push(item.isComplete);
       usersBorrow.push(item.userId);
+      xxx.push(item.id);
     });
     var temp = [];
     bookName.forEach(item => {
@@ -44,6 +47,7 @@ module.exports.indexTransaction = async function(req, res) {
         return item2.id == item;
       });
       temp.push(bookNameFind);
+
     });
     var temp2 = [];
     usersBorrow.forEach(item => {
@@ -51,12 +55,16 @@ module.exports.indexTransaction = async function(req, res) {
         return item2.id == item;
       });
       temp2.push(usersBorrow1);
+      amountBook.push(usersBorrow1.length);
     });
+
     res.render("transaction", {
       usersBorrow: temp2.flat(),
       statusBook,
       bookNameBorrow: temp.flat(),
-      sumItem: false
+      sumItem:  amountBook,
+      amountBook: xxx,
+      saveMore: true
     });
     return;
   }
@@ -71,12 +79,29 @@ module.exports.indexTransaction = async function(req, res) {
       });
       bookName.push(bookNameFind);
       amountBook.push(item.quantity);
+      statusBook.push(!usersBorrow)
     });
+
+    var x = transactions.filter(item => {
+      return item.userId == res.locals.user.id
+    });
+    x.forEach(item=>{
+      var y = books.filter(item2=>{
+        return item.bookId == item2.id; 
+      });
+        bookName.push(y);
+        statusBook.push(item.isComplete);
+
+          amountBook.push(y.length);
+    })
+    console.log(bookName);
+    
+
     res.render("transaction", {
       usersBorrow,
       bookNameBorrow: bookName.flat(),
       sumItem: amountBook,
-      statusBook: ssArrFind
+      statusBook 
     });
   }
 };
@@ -86,21 +111,26 @@ module.exports.createTransaction = (req, res) => {
     dataBook: dataBook
   });
 };
-module.exports.postCreateTransaction = (req, res) => {
+module.exports.postCreateTransaction = async function (req, res) {
   var bookRecieve = req.body.bookRecieve;
   var userRecieve = req.body.userRecieve;
-  var idBookRecieve = db
-    .get("data")
-    .find({
-      title: bookRecieve
-    })
-    .value().id;
+
+  // var idBookRecieve = db
+  //   .get("data")
+  //   .find({
+  //     title: bookRecieve
+  //   })
+  //   .value().id;
+
+
+
   var idUserRecieve = db
     .get("users")
     .find({
       name: userRecieve
     })
     .value().id;
+
   db.get("transaction")
     .push({
       tranId: "tr" + dataTran.length,
@@ -109,34 +139,34 @@ module.exports.postCreateTransaction = (req, res) => {
       isComplete: false
     })
     .write();
+
   res.redirect("/transaction");
 };
-module.exports.finishTransaction = (req, res) => {
-  // /transaction/"+ num +"/complete
+module.exports.finishTransaction = async function (req, res, next) {
+ 
   var errors = [];
   var tranIdparam = req.params.tranId;
-  var resultId = db
-    .get("transaction")
-    .find({
-      tranId: tranIdparam
-    })
-    .value();
-  if (!resultId) {
-    errors.push("id " + tranIdparam + " Not Found");
-  }
-  if (errors.length) {
-    res.render("transaction", {
-      errors: errors
-    });
-    return;
-  }
-  db.get("transaction")
-    .find({
-      tranId: tranIdparam
-    })
-    .assign({
+ 
+  try{
+   var resultId = await Transaction.findOne({_id: tranIdparam});
+  console.log(resultId);
+    if (!resultId) {
+      errors.push("id " + tranIdparam + " Not Found");
+    }
+    if (errors.length) {
+      res.render("transaction", {
+        errors: errors
+      });
+      return;
+    }
+    await Transaction.updateOne({_id: tranIdparam},{
       isComplete: true
-    })
-    .write();
-  res.redirect("/transaction");
+    });
+    res.redirect("/transaction");
+  }catch(err){
+    console.log(err);
+    next(err);
+  }
+ 
+  
 };

@@ -1,72 +1,55 @@
 var bcrypt = require('bcrypt')
 var User = require('../Models/user.model');
-module.exports.indexProfile = (req, res, next) =>{
-  let isUserAd = User.findOne({_id: req.signedCookies.userId });
-  let dataFinded = User.findOne({_id: isUserAd.id });
-  console.log(dataFinded);
-
-    var dataArr = [];
-    dataArr.push(dataFinded);
-    res.render("profile", { dataDetail: dataArr });
+module.exports.indexProfile = async function (req, res, next){
+  let isUserAd = await User.findOne({_id: req.signedCookies.userId });
+  let dataFinded = await User.findOne({_id: isUserAd.id });
+  var dataArr = [];
+ 
+  dataArr.push(dataFinded);
+  res.render("profile", { dataFinded: dataArr });
   
 }
-module.exports.postProfile = (req, res, next)=>{
-	var cloudinary = require('cloudinary');
-	cloudinary.config({ 
-		cloud_name: process.env.CloudName, 
-		api_key: process.env.APIkeyUp, 
-		api_secret: process.env.APIsecretUp 
-	});
 
- 	var isUserAd = db.get("users").find({ id: parseInt(req.signedCookies.userId) }).value();
-    let name = req.body.name;
-    let age = req.body.age;
-    let gioiTinh = req.body.GioiTinh;
-    let password = req.body.password;
-    if(!req.file){
-      req.body.avatar = "https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png";
+var cloudinary = require('cloudinary');
+cloudinary.config({ 
+  cloud_name: process.env.CloudName, 
+  api_key: process.env.APIkeyUp, 
+  api_secret: process.env.APIsecretUp 
+});
+
+module.exports.postProfile = async function (req, res, next){
+    let isUserAd = await User.findOne({_id: req.signedCookies.userId });
+
+  const saltRounds = 10;
+    if (!req.file) {
+        req.body.avatar = "https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png";
+        var hashPass = await bcrypt.hash(req.body.password, saltRounds);
+        var updateUs = await User.updateOne({_id: isUserAd.id}, { 
+              name:  req.body.name,
+              age: req.body.age,
+              sex: req.body.GioiTinh,
+              password: hashPass,
+              avatarUrl: req.body.avatar
+        });
     }
-    if(req.file){
-    	req.body.avatar = req.file.path.split("\\").slice(1).join('/');	
+
+    if (req.file) {
+        req.body.avatar = req.file.path.split("\\").slice(1).join('/');
+        try{
+          var uploader = await cloudinary.v2.uploader.upload('./public/'+ req.body.avatar);
+        }
+        catch(err){
+         console.log(err); 
+        }
+        
+        var hashPass = await bcrypt.hash(req.body.password, saltRounds);
+        var updateUs = await User.updateOne({_id: isUserAd.id}, { 
+              name:  req.body.name,
+              age: req.body.age,
+              sex: req.body.GioiTinh,
+              password: hashPass,
+              avatarUrl: uploader.url 
+        });
     }
-   	
-    let avatar = req.body.avatar;
-   
-    const saltRounds = 10;
-    
-   cloudinary.v2.uploader.upload("./public/"+avatar)
-   .then((result, err)=>{
-      console.log(result);
-   })
-   .then(()=>{
-      bcrypt.hash( password, saltRounds).then((hash) =>{
-          db.get("users")
-            .find({ id: isUserAd.id })
-            .assign({ name: name,
-             age: age,
-             sex: gioiTinh,
-             password: hash,
-             avatarUrl: avatar  })
-            .write();
-      })
-   })
-  .catch(()=>{
-      bcrypt.hash( password, saltRounds).then((hash) =>{
-          db.get("users")
-            .find({ id: isUserAd.id })
-            .assign({ name: name,
-             age: age,
-             sex: gioiTinh,
-             password: hash,
-             avatarUrl: avatar  })
-            .write();
-      })
-   })
-
-
-  
-
- 
-
-
-}	
+    res.redirect('/'); 
+} 

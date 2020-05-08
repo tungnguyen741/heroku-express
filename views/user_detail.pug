@@ -5,16 +5,13 @@ block content
   
   ul
     each x in dataFinded
-     if(dataHaveAvatar)
-      img.avatar(src= x.avatarUrl)
-     else
-      img.avatar(src= "../../"+x.avatarUrl)
+     img.avatar(src= x.avatarUrl)
      li Tên:
-      span(style="font-weight: 600; color: #333; margin-left: 5px")= x.name
+      span.ml-1= x.name
      li Tuổi:
-      span(style="color: #333; margin-left: 5px")= x.age
+      span.ml-1= x.age
      li Giới Tính:
-      span(style="color: #333; margin-left: 5px")= x.sex
+      span.ml-1= x.sex
  
   div
     a(href="/users") Go back

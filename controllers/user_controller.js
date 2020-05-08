@@ -17,9 +17,7 @@ module.exports.viewUser = async function (req, res) {
 module.exports.addUser = (req, res) => {
     res.render("user_add");
 };
-module.exports.postAddUser = async function (req, res) {
-
- 
+module.exports.postAddUser = async function (req, res) { 
     const saltRounds = 10;
     if (!req.file) {
         req.body.avatar = "https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png";
@@ -44,8 +42,6 @@ module.exports.postAddUser = async function (req, res) {
           wrongLoginCount: 0,
     }).save();
     res.redirect('/'); 
-
-
 };
 module.exports.deleteUser = async function (req, res) {
     let id = req.params.id;
@@ -80,28 +76,38 @@ module.exports.updateUser = async function (req, res) {
         dataHaveAvatar: dataHaveAvatar.length>0
     });
 };
-module.exports.postUpdateUser = async function (req, res) {
-    let id = req.params.id;
-    const saltRounds = 10;
+module.exports.postUpdateUser = async function (req, res, next) {
+   let id = req.params.id;
+   const saltRounds = 10;
     if (!req.file) {
         req.body.avatar = "https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png";
+        var hashPass = await bcrypt.hash(req.body.password, saltRounds);
+        var updateUs = await User.updateOne({_id: id}, { 
+              name:  req.body.name,
+              age: req.body.age,
+              sex: req.body.GioiTinh,
+              password: hashPass,
+              avatarUrl: req.body.avatar
+        });
     }
+
     if (req.file) {
         req.body.avatar = req.file.path.split("\\").slice(1).join('/');
+        try{
+          var uploader = await cloudinary.v2.uploader.upload('./public/'+ req.body.avatar);
+        }
+        catch(err){
+         console.log(err); 
+        }
+        
+        var hashPass = await bcrypt.hash(req.body.password, saltRounds);
+        var updateUs = await User.updateOne({_id: id}, { 
+              name:  req.body.name,
+              age: req.body.age,
+              sex: req.body.GioiTinh,
+              password: hashPass,
+              avatarUrl: uploader.url 
+        });
     }
-    try{
-      var uploader = await cloudinary.v2.uploader.upload("./public/" + req.body.avatar);
-    }
-    catch(err){
-     console.log(err); 
-    }
-    var hashPass = await bcrypt.hash(req.body.password, saltRounds);
-    var updateUs = await User.updateOne({_id: id}, { 
-          name:  req.body.name,
-          age: req.body.age,
-          sex: req.body.GioiTinh,
-          password: hashPass,
-          avatarUrl: req.body.avatar
-    });
     res.redirect('/'); 
 };

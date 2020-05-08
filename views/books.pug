@@ -26,7 +26,7 @@ block content
     a(href="/books/add", class="mr-1 btn btn-danger") Add new book
     a(href="/users", class="mr-1 btn btn-primary") View Users
    if(!viewAction)
-    a(href="/profile", class="mr-1 btn btn-primary") Update info
+    a(href="/profile/"+user.id, class="mr-1 btn btn-primary") Update info
    a(href="/transaction",  class="mr-1 btn btn-warning") View transaction
    a(href="/logout", class="btn btn-info") Đăng Xuất
 

@@ -1,4 +1,5 @@
 var Session = require('../Models/session.model');
+var Transaction = require('../Models/transaction.model');
 module.exports.addToCart = async function(req, res, next) {
     var bookId = req.params.bookId;
     var sessionId = req.signedCookies.sessionId;
@@ -21,5 +22,11 @@ module.exports.addToCart = async function(req, res, next) {
         });
       }
 
+     var updateTrans = await new Transaction ({ 
+          userId:   res.locals.user.id ,
+          bookId,
+          isComplete: false
+    }).save();
+ 
     res.redirect('/books');
 }
