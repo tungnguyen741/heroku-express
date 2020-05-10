@@ -95,19 +95,19 @@ module.exports.postUpdateUser = async function (req, res, next) {
         req.body.avatar = req.file.path.split("\\").slice(1).join('/');
         try{
           var uploader = await cloudinary.v2.uploader.upload('./public/'+ req.body.avatar);
+          var hashPass = await bcrypt.hash(req.body.password, saltRounds);
+          var updateUs = await User.updateOne({_id: id}, { 
+                name:  req.body.name,
+                age: req.body.age,
+                sex: req.body.GioiTinh,
+                password: hashPass,
+                avatarUrl: uploader.url 
+          });
         }
         catch(err){
          console.log(err); 
         }
         
-        var hashPass = await bcrypt.hash(req.body.password, saltRounds);
-        var updateUs = await User.updateOne({_id: id}, { 
-              name:  req.body.name,
-              age: req.body.age,
-              sex: req.body.GioiTinh,
-              password: hashPass,
-              avatarUrl: uploader.url 
-        });
     }
     res.redirect('/'); 
 };
