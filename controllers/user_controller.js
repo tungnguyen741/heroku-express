@@ -94,7 +94,7 @@ module.exports.postUpdateUser = async function (req, res, next) {
     if (req.file) {
         req.body.avatar = req.file.path.split("\\").slice(1).join('/');
         try{
-          var uploader = await cloudinary.v2.uploader.upload('./public/'+ req.body.avatar);
+          var uploader = await cloudinary.v2.uploader.upload(req.body.avatar);
           var hashPass = await bcrypt.hash(req.body.password, saltRounds);
           var updateUs = await User.updateOne({_id: id}, { 
                 name:  req.body.name,
