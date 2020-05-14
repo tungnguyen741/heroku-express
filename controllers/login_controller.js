@@ -17,6 +17,7 @@ module.exports.postLogin = async function(req, res, next) {
     let userLoginTrue = await User.findOne({
         email
     });
+    console.log(userLoginTrue);
     if (!userLoginTrue) {
         res.render('login', {
             errors: ["Email. or password wrong !!!"],
@@ -36,6 +37,7 @@ module.exports.postLogin = async function(req, res, next) {
     try {
         var truePass = await bcrypt.compare(pass, userLoginTrue.password);
         if(truePass){
+            console.log(`truePass`)
             await User.updateOne({ _id: userLoginTrue._id },
              { wrongLoginCount: 0 });
             
@@ -45,6 +47,7 @@ module.exports.postLogin = async function(req, res, next) {
             res.clearCookie("sessionId");
             res.redirect('/books');
         }
+        console.log(`WrongPass`)
             await User.updateOne({ _id: userLoginTrue._id },
             { wrongLoginCount: ++userLoginTrue.wrongLoginCount });
 
