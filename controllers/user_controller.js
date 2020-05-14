@@ -10,12 +10,22 @@ cloudinary.config({
 
 module.exports.viewUser = async function(req, res) {
     var users = await User.find();
-    res.render("user_view", {
-        users
-    });
+    if(res.locals.user){
+        if (res.locals.user.isAdmin) {
+            return res.render("user_view", {
+                users
+            });
+        }
+    }
+    res.send('<img src="https://assets.prestashop2.com/sites/default/files/styles/blog_750x320/public/blog/2019/10/banner_error_404.jpg?itok=eAS4swln">')
 };
 module.exports.addUser = (req, res) => {
-    res.render("user_add");
+   if(res.locals.user){
+        if (res.locals.user.isAdmin) {
+        res.render("user_add");
+        }
+    }
+    res.send('<img src="https://assets.prestashop2.com/sites/default/files/styles/blog_750x320/public/blog/2019/10/banner_error_404.jpg?itok=eAS4swln">')
 };
 module.exports.postAddUser = async function(req, res) {
     const saltRounds = 10;
@@ -62,29 +72,27 @@ module.exports.detailUser = async function(req, res) {
     let id = req.params.id;
     let dataHaveAvatar = [];
     let dataFinded = await User.find({ _id: id });
-    dataFinded.forEach(item => {
-        if (item.avatarUrl.includes('https')) {
-            dataHaveAvatar.push(item.avatarUrl);
-        }
-    });
-    res.render("user_detail", {
-        dataFinded,
-        dataHaveAvatar: dataHaveAvatar.length > 0
-    });
+    if(res.locals.user){
+        if (res.locals.user.isAdmin) {
+        res.render("user_detail", {
+            dataFinded,
+            dataHaveAvatar: dataHaveAvatar.length > 0
+        });
+    }}
+    res.send('<img src="https://assets.prestashop2.com/sites/default/files/styles/blog_750x320/public/blog/2019/10/banner_error_404.jpg?itok=eAS4swln">')
 };
 module.exports.updateUser = async function(req, res) {
     let id = req.params.id;
     let dataHaveAvatar = [];
-    let dataFinded = await User.find({ _id: id });
-    dataFinded.forEach(item => {
-        if (item.avatarUrl.includes('https')) {
-            dataHaveAvatar.push(item.avatarUrl);
-        }
-    });
-    res.render("user_update", {
-        dataFinded,
-        dataHaveAvatar: dataHaveAvatar.length > 0
-    });
+   if(res.locals.user){
+        if (res.locals.user.isAdmin) {
+        let dataFinded = await User.find({ _id: id });
+        res.render("user_update", {
+            dataFinded,
+            dataHaveAvatar: dataHaveAvatar.length > 0
+        });
+    }}
+    res.send('<img src="https://assets.prestashop2.com/sites/default/files/styles/blog_750x320/public/blog/2019/10/banner_error_404.jpg?itok=eAS4swln">')
 };
 module.exports.postUpdateUser = async function(req, res, next) {
     let id = req.params.id;
