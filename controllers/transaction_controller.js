@@ -71,6 +71,7 @@ module.exports.indexTransaction = async function(req, res) {
         usersBorrow = users.filter(item => {
             return res.locals.user.id == item.id;
         });
+        console.log(usersBorrow);
         ssArrFind.forEach(item => {
             var bookNameFind = books.filter(item2 => {
                 return item2.id == item.bookId;
@@ -82,15 +83,6 @@ module.exports.indexTransaction = async function(req, res) {
         var x = transactions.filter(item => {
             return item.userId == res.locals.user.id
         });
-        x.forEach(item => {
-            var y = books.filter(item2 => {
-                return item.bookId == item2.id;
-            });
-            bookName.push(y);
-            statusBook.push(item.isComplete);
-            amountBook.push(y.length);
-        })
-        console.log(bookName);
         res.render("transaction", {
             usersBorrow,
             bookNameBorrow: bookName.flat(),
