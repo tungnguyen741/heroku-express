@@ -19,29 +19,38 @@ module.exports.addUser = (req, res) => {
 };
 module.exports.postAddUser = async function (req, res) { 
     const saltRounds = 10;
-    if (!req.file) {
-        req.body.avatar = "https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png";
-        res.redirect('/'); 
+   if (!req.file) {
+        var hashPass = await bcrypt.hash(req.body.password, saltRounds);
+        var updateUs = await new User ({ 
+              name:  req.body.name ,
+              age: req.body.age,
+              sex: req.body.GioiTinh,
+              password: hashPass,
+              avatarUrl: "https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png",
+              isAdmin: false,
+              wrongLoginCount: 0,
+        }).save();
     }
+
     if (req.file) {
       try{
         var uploader = await cloudinary.v2.uploader.upload(req.file.path);
+        var hashPass = await bcrypt.hash(res.locals.password, saltRounds);
+        var updateUs = await new User ({ 
+              name:  req.body.name ,
+              age: req.body.age,
+              sex: req.body.GioiTinh,
+              password: hashPass,
+              avatarUrl: uploader.url,
+              isAdmin: false,
+              wrongLoginCount: 0,
+        }).save();
       }
       catch(err){
        console.log(err); 
       }
-      var hashPass = await bcrypt.hash(res.locals.password, saltRounds);
-      var updateUs = await new User ({ 
-            name:  req.body.name ,
-            age: req.body.age,
-            sex: req.body.GioiTinh,
-            password: hashPass,
-            avatarUrl: req.body.avatar,
-            isAdmin: false,
-            wrongLoginCount: 0,
-      }).save();
-      res.redirect('/'); 
     }
+    res.redirect('/'); 
 };
 module.exports.deleteUser = async function (req, res) {
     let id = req.params.id;
