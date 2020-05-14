@@ -51,7 +51,7 @@ module.exports.postAddUser = async function(req, res) {
             console.log(err);
         }
     }
-    res.redirect('/');
+    res.redirect('/login');
 };
 module.exports.deleteUser = async function(req, res) {
     let id = req.params.id;
