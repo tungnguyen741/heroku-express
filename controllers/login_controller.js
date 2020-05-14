@@ -34,30 +34,33 @@ module.exports.postLogin = async function(req, res, next) {
     }
     //check pass
     try {
-        await bcrypt.compare(pass, userLoginTrue.password);
-    } catch {
-        await User.updateOne({ _id: userLoginTrue._id },
-        { wrongLoginCount: ++userLoginTrue.wrongLoginCount });
+        var truePass = await bcrypt.compare(pass, userLoginTrue.password);
+        if(truePass){
+            await User.updateOne({ _id: userLoginTrue._id },
+             { wrongLoginCount: 0 });
+            
+            res.cookie("userId", userLoginTrue._id, {
+                signed: true
+            });
+            res.clearCookie("sessionId");
+            res.redirect('/books');
+        }
+            await User.updateOne({ _id: userLoginTrue._id },
+            { wrongLoginCount: ++userLoginTrue.wrongLoginCount });
 
-        if (userLoginTrue.wrongLoginCount == 2) {
+            if (userLoginTrue.wrongLoginCount == 2) {
+                res.render('login', {
+                    errors: ["You have entered it incorrectly 2 times, if 3 times email will block !!!"],
+                    values: req.body
+                });
+                return;
+            }
             res.render('login', {
-                errors: ["You have entered it incorrectly 2 times, if 3 times email will block !!!"],
+                errors: ["Email or password wrong123 !!!"],
                 values: req.body
             });
-            return;
-        }
-        res.render('login', {
-            errors: ["Email or password wrong123 !!!"],
-            values: req.body
-        });
+    } catch(err){
+        console.log(err);
     }
 
-    await User.updateOne({ _id: userLoginTrue._id },
-     { wrongLoginCount: 0 });
-    
-    res.cookie("userId", userLoginTrue._id, {
-        signed: true
-    });
-    res.clearCookie("sessionId");
-    res.redirect('/books');
 }
