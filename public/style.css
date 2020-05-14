@@ -13,13 +13,21 @@ p.card-text {
 .card-body {
     height: 400px;
 }
-.btn-view {
-    bottom: 7%;
-    left: 10%;
+.div.btn-all div {
+    margin: 5px 5px;
 }
-.btn-borrow {
-    left: 40%;
-    bottom: 7%;
+.div.btn-all {
+    bottom: 10%;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    text-align: center;
+}
+.btn-view, .btn-borrow, .btn-delete, .btn-update {
+    display: inline-block;
+}
+.btn-delete {
+    display: block;
 }
 button.btn-num {
     color: #111;
@@ -33,18 +41,21 @@ button.btn-num.btn-active {
     background: #dc3545;
     color: #fff;
 }
-.user_avatar img, 
-.navbar.navbar-light.bg-light img,
-.user_avatar li img{
-    width:  75px;
-    height:  75px;
+.user_avatar img, .navbar.navbar-light.bg-light img, .user_avatar li img {
+    width: 75px;
+    height: 75px;
     border-radius: 50%;
     border: 3px solid #eee;
 }
-.avatar{
+.avatar {
     width: 150px;
     height: 150px;
 }
 i.fas.fa-shopping-cart.text-danger {
     font-size: 40px;
+}
+.div.btn-all.w-100 {
+    position: absolute;
+    left: 0;
+    margin-top: 30px;
 }

@@ -3,6 +3,7 @@ block content
   div(class="container mt-5")
     ul
      each x in dataDetail
+      img(src= x.image)
       li Tên sách:
        span(style="font-weight: 600; color: #333; margin-left: 5px") #{x._doc.title}
       li(class=" text-justify") Mô tả:

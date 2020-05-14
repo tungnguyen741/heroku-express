@@ -92,9 +92,9 @@ module.exports.postUpdateUser = async function (req, res, next) {
     }
 
     if (req.file) {
-        req.body.avatar = req.file.path.split("\\").slice(1).join('/');
+        // req.body.avatar = req.file.path.split("\\").slice(1).join('/'); local
 
-        console.log(` req body: ${req.body.avatar} req file: ${req.file} req file path: ${req.file.path}`);
+        //console.log(` req body: ${req.body.avatar} req file: ${req.file} req file path: ${req.file.path}`);
         try{
           var uploader = await cloudinary.v2.uploader.upload(req.file.path);
           var hashPass = await bcrypt.hash(req.body.password, saltRounds);

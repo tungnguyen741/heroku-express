@@ -15,7 +15,7 @@ block content
         h5.m-0.mr-5= "Hi " + user.name
        else
         h5.m-0.mr-5= "Hi Guess"
-   #navbarSupportedContent.collapse.navbar-collapse
+   #navbarSupportedContent.navbar-collapse
     ul.navbar-nav.mr-auto 
      li.nav-item
       span.nav-link
@@ -35,19 +35,22 @@ block content
   .container.mt-5.pt-5
     .row
       each book, index in books
-        .col-3.item
+        .col-md-4.col-6.item
          .card.mb-3
           img(src= book._doc.image, class="card-img-top")
           div(class="card-body position-relative")  
             h5(class="card-title")= book._doc.title
             p(class="card-text")= book._doc.description
-            .button.position-absolute.btn-view
-              a(class="btn btn-primary", href="/books/detail/"+ book.id) View
-            .button.position-absolute.btn-borrow
-              a(class="btn btn-danger", href="/cart/add/"+ book.id) Add to cart
+            .div.btn-all
+              .button.btn-view
+                a(class="btn btn-primary", href="/books/detail/"+ book.id) View
+              .button.btn-borrow
+                a(class="btn btn-warning", href="/cart/add/"+ book.id) Add to cart
               if(viewAction)
-               a(class="btn btn-danger ml-1 btn-delete", href="/books/delete/"+ book.id) Delete
-               a(class="btn btn-warning ml-1 btn-update", href="/books/update/"+ book.id) Update
+                .btn-update
+                 a(class="btn btn-info", href="/books/update/"+ book.id) Update
+                .btn-delete
+                 a(class="btn btn-danger", href="/books/delete/"+ book.id) Delete
 
     .pagination.mb-5.mt-5.d-flex.justify-content-center
       form(action="/books", method="GET")
