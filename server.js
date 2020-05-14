@@ -9,15 +9,15 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(cookieParser(process.env.sessionKey));
-const port = process.env.PORT || 3000; 
+const port = process.env.PORT || 3000;
 // MONGO DB
 const mongoose = require('mongoose');
-mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true});
+mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-  // we're connected!
-  console.log('CONNECTED Successfully')
+    // we're connected!
+    console.log('CONNECTED Successfully')
 });
 
 // ==== ROUTE ====
@@ -42,12 +42,12 @@ app.use(express.static('public'));
 //==== USE ROUTE ====
 //app.use(session);
 app.use("/login", loginRoute);
-app.use("/users",session, userRoute);
-app.use("/",session, cartRoute, bookRoute);
-app.use("/books",session, cartRoute, bookRoute);
-app.use("/transaction",session, cartRoute, transactionRoute);
-app.use("/profile",session, auth_middleware.checkCookie, profileRoute);
-app.use("/cart",session, cartRoute);
+app.use("/users", session, userRoute);
+app.use("/", session, cartRoute, bookRoute);
+app.use("/books", session, cartRoute, bookRoute);
+app.use("/transaction", session, cartRoute, transactionRoute);
+app.use("/profile", session, auth_middleware.checkCookie, profileRoute);
+app.use("/cart", session, cartRoute);
 
 //==== API ====
 app.use("/api/book", apiBookRoute);
@@ -55,14 +55,13 @@ app.use("/api/transactions", apiTransactionRoute);
 app.use("/api/login", apiLoginRoute);
 app.use("/api/users", apiUserRoute);
 var Session = require('./Models/session.model');
-app.get("/logout", async function (req, res) {
+app.get("/logout", async function(req, res) {
     res.clearCookie("userId");
     res.clearCookie("sessionId");
-    await Session.deleteOne({sskey: req.signedCookies.sessionId});
+    await Session.deleteOne({ sskey: req.signedCookies.sessionId });
     res.redirect("/login");
 });
 
 app.listen(port, () => {
     console.log("OK!!!");
 });
-

@@ -30,6 +30,7 @@ module.exports.indexTransaction = async function(req, res) {
             sumItem: amountBook,
             statusBook: statusBook
         });
+        return;
     }
     //ADMIN
     var xxx = [];
@@ -71,16 +72,16 @@ module.exports.indexTransaction = async function(req, res) {
         usersBorrow = users.filter(item => {
             return res.locals.user.id == item.id;
         });
-        ssArrFind.forEach(item => {
+        var userOnTrans = transactions.filter(item => {
+            return item.userId == res.locals.user.id
+        });
+        userOnTrans.forEach(item => {
             var bookNameFind = books.filter(item2 => {
                 return item2.id == item.bookId;
             });
             bookName.push(bookNameFind);
-            amountBook.push(item.quantity);
-            statusBook.push(!usersBorrow)
-        });
-        var x = transactions.filter(item => {
-            return item.userId == res.locals.user.id
+            amountBook.push(bookNameFind.length);
+            statusBook.push(item.isComplete)
         });
         res.render("transaction", {
             usersBorrow,
@@ -88,6 +89,7 @@ module.exports.indexTransaction = async function(req, res) {
             sumItem: amountBook,
             statusBook
         });
+        return;
     }
 };
 module.exports.createTransaction = async function(req, res) {
@@ -119,7 +121,7 @@ module.exports.finishTransaction = async function(req, res, next) {
         var resultId = await Transaction.findOne({
             _id: tranIdparam
         });
- 
+
         if (!resultId) {
             errors.push("id " + tranIdparam + " Not Found");
         }

@@ -3,7 +3,7 @@ const sgMail = require('@sendgrid/mail');
 var User = require('../Models/user.model');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY.trim());
 module.exports.login = (req, res, next) => {
-    res.render('login');
+    res.status(200).render('login');
 }
 module.exports.postLogin = async function(req, res, next) {
     let email = req.body.email;
@@ -18,7 +18,7 @@ module.exports.postLogin = async function(req, res, next) {
         email
     });
     if (!userLoginTrue) {
-        res.render('login', {
+        res.status(200).render('login', {
             errors: ["Email. or password wrong !!!"],
             values: req.body
         });
@@ -26,7 +26,7 @@ module.exports.postLogin = async function(req, res, next) {
     }
     if (userLoginTrue.wrongLoginCount >= 5) {
         sgMail.send(msg);
-        res.render('login', {
+        res.status(200).render('login', {
             errors: ["You have entered it incorrectly many times please contact the admin"],
             values: req.body
         });
@@ -35,10 +35,9 @@ module.exports.postLogin = async function(req, res, next) {
     //check pass
     try {
         var truePass = await bcrypt.compare(pass, userLoginTrue.password);
-        if(truePass){
-            await User.updateOne({ _id: userLoginTrue._id },
-             { wrongLoginCount: 0 });
-            
+        if (truePass) {
+            await User.updateOne({ _id: userLoginTrue._id }, { wrongLoginCount: 0 });
+
             res.cookie("userId", userLoginTrue._id, {
                 signed: true
             });
@@ -46,22 +45,21 @@ module.exports.postLogin = async function(req, res, next) {
             res.redirect('/books');
             return;
         }
-            await User.updateOne({ _id: userLoginTrue._id },
-            { wrongLoginCount: ++userLoginTrue.wrongLoginCount });
+        await User.updateOne({ _id: userLoginTrue._id }, { wrongLoginCount: ++userLoginTrue.wrongLoginCount });
 
-            if (userLoginTrue.wrongLoginCount == 2) {
-                res.render('login', {
-                    errors: ["You have entered it incorrectly 2 times, if 3 times email will block !!!"],
-                    values: req.body
-                });
-                return;
-            }
-            res.render('login', {
-                errors: ["Email or password wrong123 !!!"],
+        if (userLoginTrue.wrongLoginCount == 2) {
+            res.status(200).render('login', {
+                errors: ["You have entered it incorrectly 2 times, if 3 times email will block !!!"],
                 values: req.body
             });
-    } catch(err){
-        console.log(err);
+            return;
+        }
+        res.status(200).render('login', {
+            errors: ["Email or password wrong123 !!!"],
+            values: req.body
+        });
+    } catch (err) {
+        return next(err);
     }
 
 }

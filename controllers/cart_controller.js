@@ -9,26 +9,26 @@ module.exports.addToCart = async function(req, res, next) {
     }
     let session = await Session.findById(sessionId);
 
-      let book = session.cart.find(
+    let book = session.cart.find(
         cartItem => cartItem.bookId.toString() === bookId
-      );
+    );
 
-      if (book) {
+    if (book) {
         book.quantity += 1;
         session.save();
-        res.redirect('/books'); 
-      } else {
+        res.redirect('/books');
+    } else {
         await Session.findByIdAndUpdate(sessionId, {
-          $push: { cart: { bookId, quantity: 1 } }
+            $push: { cart: { bookId, quantity: 1 } }
         });
-        res.redirect('/books'); 
-      }
+        res.redirect('/books');
+    }
 
-     var updateTrans = await new Transaction ({ 
-          userId:   res.locals.user.id ,
-          bookId,
-          isComplete: false
+    var updateTrans = await new Transaction({
+        userId: res.locals.user.id,
+        bookId,
+        isComplete: false
     }).save();
- 
-    res.redirect('/books'); 
+
+    res.redirect('/books');
 }
