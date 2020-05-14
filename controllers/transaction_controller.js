@@ -71,7 +71,6 @@ module.exports.indexTransaction = async function(req, res) {
         usersBorrow = users.filter(item => {
             return res.locals.user.id == item.id;
         });
-        console.log(usersBorrow);
         ssArrFind.forEach(item => {
             var bookNameFind = books.filter(item2 => {
                 return item2.id == item.bookId;

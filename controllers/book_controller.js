@@ -5,7 +5,7 @@ var Session = require('../Models/session.model');
 module.exports.showBook = async function (req, res) {
   var dataBook = await Book.find();
   var page = parseInt(req.query.page) || 1; //so trang
-  var items = 8; // 8 item
+  var items = 9; // 9 item
   var start = (page-1)*items;
   var end = page*items;
   var endPage = Math.floor(dataBook.length / items)+1;
@@ -13,7 +13,6 @@ module.exports.showBook = async function (req, res) {
  
  try{
    var sessionOb = await Session.findOne({_id: req.signedCookies.sessionId});
-   // var isUserAd = await User.findOne({_id: req.signedCookies.userId});
  }
  catch(err){
     next(err);
@@ -47,8 +46,6 @@ module.exports.showBook = async function (req, res) {
       endPage,
       sumCart: res.locals.count  
      });
-  
- 
 }
 module.exports.showAdd = (req, res) => {
   res.render("add");

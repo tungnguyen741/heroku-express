@@ -16,10 +16,12 @@ module.exports.addToCart = async function(req, res, next) {
       if (book) {
         book.quantity += 1;
         session.save();
+        res.redirect('/books'); 
       } else {
         await Session.findByIdAndUpdate(sessionId, {
           $push: { cart: { bookId, quantity: 1 } }
         });
+        res.redirect('/books'); 
       }
 
      var updateTrans = await new Transaction ({ 
@@ -28,5 +30,5 @@ module.exports.addToCart = async function(req, res, next) {
           isComplete: false
     }).save();
  
-    res.redirect('/books');
+    res.redirect('/books'); 
 }
