@@ -95,7 +95,6 @@ module.exports.searchBook = async function(req, res) {
 
    
     var dataFiltered = dataBook.filter(product => product.title.toLowerCase().indexOf(q) != -1 ||  product.title.indexOf(q) != -1);
-
     if (res.locals.user) {
         if (res.locals.user.isAdmin) {
             res.status(200).render("books", {

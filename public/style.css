@@ -76,3 +76,7 @@ i.fas.fa-shopping-cart.text-danger {
     display: flex;
     align-items: center;
 }
+.notFound {
+    font-size: 26px;
+    font-weight: 600;
+}
