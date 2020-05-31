@@ -31,8 +31,16 @@ block content
    a(href="/logout", class="btn btn-info") Đăng Xuất
 
 
+  .input.container.mt-5
+    form(action="/books/search" method="GET")
+      div.wrapper_input
+        input(name="s" type='text', value=valueRecurrent , placeholder="Tìm kiếm tên sản phẩm")
+        button.btn.btn-danger Search 
   
-  .container.mt-5.pt-5
+  if(numResult)
+    div(class="numberResult container") Có #{numResult} kết quả tìm kiếm được
+  
+  .container.mt-5
     .row
       each book, index in books
         .col-md-4.col-6.item

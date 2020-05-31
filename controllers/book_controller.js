@@ -83,3 +83,49 @@ module.exports.postUpdateBook = async function(req, res) {
 
     res.redirect("/books");
 };
+
+module.exports.searchBook = async function(req, res) {
+    let q = req.query.s;    
+    var dataBook = await Book.find();
+    var page = parseInt(req.query.page) || 1; //so trang
+    var items = 9; // 9 item
+    var start = (page - 1) * items;
+    var end = page * items;
+    var endPage = Math.floor(dataBook.length / items) + 1;
+
+   
+    var dataFiltered = dataBook.filter(product => product.title.toLowerCase().indexOf(q) != -1 ||  product.title.indexOf(q) != -1);
+
+    if (res.locals.user) {
+        if (res.locals.user.isAdmin) {
+            res.status(200).render("books", {
+                books: dataFiltered,
+                viewAction: true,
+                user: res.locals.user,
+                page: page,
+                endPage: endPage,
+                numResult: dataFiltered.length,
+                valueRecurrent: req.query.s
+            });
+        }
+        res.status(200).render("books", {
+            books: dataFiltered,
+            viewAction: false,
+            user: res.locals.user,
+            page,
+            endPage,
+            numResult: dataFiltered.length,
+            valueRecurrent: req.query.s
+        });
+    }
+
+    res.status(200).render("books", {
+        books: dataFiltered,
+        viewAction: false,
+        user: dataBook,
+        page,
+        endPage,
+        numResult: dataFiltered.length,
+        valueRecurrent: req.query.s
+    });
+}

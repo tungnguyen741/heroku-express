@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(cookieParser(process.env.sessionKey));
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 // MONGO DB
 const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true });

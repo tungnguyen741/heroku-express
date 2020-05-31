@@ -62,3 +62,17 @@ i.fas.fa-shopping-cart.text-danger {
 .form-login{
     margin: 0 auto
 }
+.input input {
+    padding: 7px 17px;
+    border: 0;
+    width: 50%;
+    background: #eee;
+    font-size: 20px;
+}   
+.input input:focus{
+    outline: none;
+}
+.wrapper_input {
+    display: flex;
+    align-items: center;
+}
