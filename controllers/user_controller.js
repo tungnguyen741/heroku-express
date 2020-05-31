@@ -20,12 +20,7 @@ module.exports.viewUser = async function(req, res) {
     res.send('<img src="https://assets.prestashop2.com/sites/default/files/styles/blog_750x320/public/blog/2019/10/banner_error_404.jpg?itok=eAS4swln">')
 };
 module.exports.addUser = (req, res) => {
-   if(res.locals.user){
-        if (res.locals.user.isAdmin) {
         res.render("user_add");
-        }
-    }
-    res.send('<img src="https://assets.prestashop2.com/sites/default/files/styles/blog_750x320/public/blog/2019/10/banner_error_404.jpg?itok=eAS4swln">')
 };
 module.exports.postAddUser = async function(req, res) {
     const saltRounds = 10;
