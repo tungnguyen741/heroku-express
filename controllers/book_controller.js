@@ -118,6 +118,9 @@ module.exports.searchBook = async function(req, res) {
         });
     }
 
+    if(dataFiltered.length == 0){
+        dataFiltered = false
+    }
     res.status(200).render("books", {
         books: dataFiltered,
         viewAction: false,

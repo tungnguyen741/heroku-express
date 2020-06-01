@@ -60,7 +60,7 @@ block content
                   a(class="btn btn-info", href="/books/update/"+ book.id) Update
                   .btn-delete
                   a(class="btn btn-danger", href="/books/delete/"+ book.id) Delete
-      elseif(books=[""])
+      if(!books)
         div.notFound.container Không tìm thấy sản phẩm
     .pagination.mb-5.mt-5.d-flex.justify-content-center
       form(action="/books", method="GET")
