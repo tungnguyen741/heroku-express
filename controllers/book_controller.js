@@ -3,11 +3,14 @@ var Book = require('../Models/data.model');
 var User = require('../Models/user.model');
 var Session = require('../Models/session.model');
 module.exports.showBook = async function(req, res) {
-    var dataBook = await Book.find();
+    //var dataBook = await Book.find();
+    const dataBookPromise = Book.find();
+   
     var page = parseInt(req.query.page) || 1; //so trang
     var items = 9; // 9 item
     var start = (page - 1) * items;
     var end = page * items;
+    const dataBook = await dataBookPromise;
     var endPage = Math.floor(dataBook.length / items) + 1;
 
     if (res.locals.user) {
@@ -57,8 +60,13 @@ module.exports.postAddBook = (req, res) => {
 
 module.exports.deleteBook = async function(req, res) {
     let id = req.params.id;
-    await Book.deleteOne({ _id: id });
-    await Transaction.deleteOne({ bookId: id })
+    // await Book.deleteOne({ _id: id });
+    // await Transaction.deleteOne({ bookId: id });
+    const bookDelPromise = Book.deleteOne({ _id: id });
+    const transDelPromise = Transaction.deleteOne({ bookId: id })
+    const bookDel = await bookDelPromise;
+    const transDel = await transDelPromise;
+    
     res.redirect("/books");
 
 };
