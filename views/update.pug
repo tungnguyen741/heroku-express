@@ -11,9 +11,9 @@ block content
     li Mô tả:
      span(style="color: #333; margin-left: 5px") #{x._doc.description}
     h3 Edit
-    form(class="form-group",action="/books/update/" + x.id, method="POST")
+    form(class="form-group" action="/books/update/" + x.id method="POST")
       label Tên sách 
-      input(class="form-control w-50",type="text", name="titleUpdate")
+      input(class="form-control w-50" type="text" name="titleUpdate")
       br
       label Mô tả sách
       input(class="form-control w-50", type="text", name="descriptionUpdate")
