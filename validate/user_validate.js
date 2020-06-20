@@ -37,7 +37,7 @@ module.exports.postAddUser = (req, res, next) => {
      //kiểm tra năm sinh > 1900
     
      yy = age.split("-");
-     if(yy[0] < 1920 && yy[0] > 2020 ){
+     if(yy[0] < 1920 || yy[0] >= 2020 ){
          res.render("user_add",{
              errors: ["Năm sinh ko hợp lệ"],
              values: req.body
@@ -54,7 +54,7 @@ module.exports.postAddUser = (req, res, next) => {
         return;
     }
     //kiểm tra email có @
-    if( !email.includes("@") ){
+    if( !(email.includes("@") && email.includes(".")) ){
         res.render("user_add",{
             errors: ["Email ko đúng định dạng"],
             values: req.body

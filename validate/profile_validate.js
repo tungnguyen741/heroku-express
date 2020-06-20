@@ -46,7 +46,7 @@ module.exports.postAddProfile = async (req, res, next) => {
      //kiểm tra năm sinh > 1900
     
      yy = age.split("-");
-     if(yy[0] < 1920 && yy[0] > 2020 ){
+     if(yy[0] < 1920 || yy[0] >= 2020 ){
          res.render("profile",{
              errors: ["Năm sinh ko hợp lệ"],
              values: req.body,
