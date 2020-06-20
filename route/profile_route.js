@@ -5,7 +5,7 @@ const profile_validate = require('../validate/profile_validate');
 
 var multer = require('multer');
 var upload = multer({
-    dest: ''
+    dest: './public/uploads/'
 });
 router.get("/:id", profile_controller.indexProfile);
 router.post("/:id", upload.single('avatar'), profile_validate.postAddProfile, profile_controller.postProfile);
