@@ -2,24 +2,26 @@ extends ../layout/common.pug
 block content
  div(class="container mt-4")
   h1.text-danger Info User
-
+   if(errors)
+      each error in errors
+        .alert.alert-danger.w-50= error
  
   h4
     each x in dataFinded 
       .mt-2.mb-2
       img.avatar(src= x.avatarUrl)
       p="Tên:  "+ x.name
-      p="Tuổi:  "+ x.age
+      p="Ngày Sinh:  "+ x.age
       p="Giới Tính:  "+ x.sex
   hr
   h2.text-danger Update User
   each x in dataFinded  
-   form(class="form-group",action="/users/update/" + x.id, method="POST", enctype="multipart/form-data")
+   form(class="form-group",action="/profile/" + x.id, method="POST", enctype="multipart/form-data")
           label Tên 
-          input(class="form-control w-50",type="text", name="name")
+          input(class="form-control w-50",type="text", name="name" ,  value=values?values.name:"")
           br
-          label Tuổi 
-          input(class="form-control w-50",type="text", name="age")
+          label Ngày Sinh
+          input(class="form-control w-50",type="date", name="age", value=values?values.age:"")
           br
           label Mật khẩu 
           input(class="form-control w-50",type="password", name="password")

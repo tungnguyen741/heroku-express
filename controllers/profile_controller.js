@@ -19,18 +19,20 @@ cloudinary.config({
 
 module.exports.postProfile = async function(req, res, next) {
     //let isUserAd = await User.findOne({ _id: req.signedCookies.userId });
-    let isUserAd = User.findOne({ _id: req.signedCookies.userId });
+    //let isUserAd = await User.findOne({ _id: req.signedCookies.userId });
+    console.log('USER TÌM THẤY:   ',res.locals.name);
+    console.log('USER TÌM THẤY:   ',res.locals.user._id);
     const saltRounds = 10;
     if (!req.file) {
-        req.body.avatar = "https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png";
+        // req.body.avatar = "https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png";
         // var hashPass = await bcrypt.hash(req.body.password, saltRounds);
-        const hashPassPromise = bcrypt.hash(req.body.password, saltRounds);
-        var updateUs = User.updateOne({ _id: isUserAd.id }, {
-            name: req.body.name,
-            age: req.body.age,
-            sex: req.body.GioiTinh,
-            password: await hashPassPromise,
-            avatarUrl: req.body.avatar
+        const hashPassPromise = await bcrypt.hash(res.locals.password, saltRounds);
+        updateUs = await User.updateOne({ _id:  res.locals.user._id }, {
+            name: res.locals.name,
+            age: res.locals.age,
+            sex: res.locals.gioiTinh,
+            password:   hashPassPromise,
+            avatarUrl: res.locals.avatar
         });
     }
 
@@ -39,16 +41,16 @@ module.exports.postProfile = async function(req, res, next) {
             // var uploader = await cloudinary.v2.uploader.upload(req.file.path);
             // var hashPass = await bcrypt.hash(req.body.password, saltRounds);
             // var updateUs = await User.updateOne({ _id: isUserAd.id }, {
-            const uploaderPromise =  cloudinary.v2.uploader.upload(req.file.path);
-            const hashPassPromise = bcrypt.hash(req.body.password, saltRounds);
+            const uploaderPromise = await cloudinary.v2.uploader.upload(req.file.path);
+            const hashPassPromise = await bcrypt.hash(req.body.password, saltRounds);
             // const uploader = await updateUsPromise;
             // const hashPass = await hashPassPromise;
-            const updateUsPromise = User.updateOne({ _id: isUserAd.id }, {
-                name: req.body.name,
-                age: req.body.age,
-                sex: req.body.GioiTinh,
-                password: await hashPassPromise,
-                avatarUrl: await updateUsPromise.url
+            updateUsPromise = await User.updateOne({ _id: res.locals.user._id }, {
+                name: res.locals.name,
+                age: res.locals.age,
+                sex: res.locals.gioiTinh,
+                password:  hashPassPromise,
+                avatarUrl:  uploaderPromise.url
             });
             
         } catch (err) {
@@ -56,5 +58,5 @@ module.exports.postProfile = async function(req, res, next) {
         }
 
     }
-    res.redirect('/');
+   res.redirect('/');
 }

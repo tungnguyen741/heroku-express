@@ -1,21 +1,19 @@
 extends ../layout/common.pug
 block content
- if(errors)
-  each error in errors
-    .alert.alert-danger= error
-  a(href="/users/add", class="btn btn-danger") Go back
- else
-   div(class="container mt-4")
-    h2 Thêm người thuê sách
+  div(class="container mt-4")
+    h2 Đăng ký tài khoản mới
+    if(errors)
+      each error in errors
+        .alert.alert-danger.w-50= error
     form(class="form-group",action="/users/add", method="POST", enctype="multipart/form-data")
       label Tên 
-      input(class="form-control w-50",type="text", name="name")
+      input(class="form-control w-50",type="text", name="name",  value=values?values.name:"")
       br
-      label Tuổi
-      input(class="form-control w-50",type="text", name="age")
+      label Ngày sinh
+      input(class="form-control w-50",type="date", name="age",  value=values?values.age:"")
       br
       label email
-      input(class="form-control w-50",type="text", name="email")
+      input(class="form-control w-50",type="text", name="email",  value=values?values.email:"")
       br
       label password
       input(class="form-control w-50",type="password", name="password")
@@ -29,5 +27,6 @@ block content
       input(class="form-control-file w-50",type="file", name="avatar")
       br
       div
-       button(class="btn btn-info mt-3") Add
-
+        button(class="btn btn-info mt-3") Add
+    
+      //- a(href="/users/add", class="btn btn-danger") Go back

@@ -24,6 +24,7 @@ module.exports.addUser = (req, res) => {
 };
 module.exports.postAddUser = async function(req, res) {
     const saltRounds = 10;
+    
     if (!req.file) {
         var hashPass = await bcrypt.hash(req.body.password, saltRounds);
         var updateUs = await new User({

@@ -1,20 +1,28 @@
-module.exports.postAddUser = (req, res, next) => {
+var User = require('../Models/user.model');
+module.exports.postAddProfile = async (req, res, next) => {
+    let isUserAd = await User.findOne({ _id: req.signedCookies.userId });
+    let dataFinded = await User.findOne({ _id: isUserAd.id });
+    var dataArr = [];
+
+    dataArr.push(dataFinded);
+
+
     var errors = [];
     let name = req.body.name;
     let age = req.body.age;
     let gioiTinh = req.body.GioiTinh;
-    let email = req.body.email;
     let password = req.body.password;
-
+    
     // Kiểm tra tên ko là số
     stringParse = name.split("");
 
     stringParse.forEach(item => {
-        if( parseInt(item) ){
+        if(parseInt(item) ){
             errors.push("Tên phải là chữ")
-            res.render("user_add", {
+            res.render("profile", {
                 errors,
-                values: req.body
+                values: req.body,
+                dataFinded: dataArr
             })
             return;
         }
@@ -22,11 +30,12 @@ module.exports.postAddUser = (req, res, next) => {
 
 
     // nhập thiếu thông tin
-    if(!name || !age || !gioiTinh || !email || !password){
+    if(!name || !age || !gioiTinh ||  !password){
         errors.push("Ko được để trống các ô")
-        res.render("user_add", {
+        res.render("profile", {
             errors,
-            values: req.body
+            values: req.body,
+            dataFinded: dataArr
         })
         return;
     }
@@ -38,29 +47,24 @@ module.exports.postAddUser = (req, res, next) => {
     
      yy = age.split("-");
      if(yy[0] < 1920 && yy[0] > 2020 ){
-         res.render("user_add",{
+         res.render("profile",{
              errors: ["Năm sinh ko hợp lệ"],
-             values: req.body
+             values: req.body,
+             dataFinded: dataArr
          });
          return;
      }
 
     //Kiểm tra mật khẩu
     if( !(password.length >=8 &&  password.toLowerCase().indexOf(password) == -1)){
-        res.render("user_add",{
+        res.render("profile",{
             errors: ["Mật khẩu nhiều hơn 8 ký tự, có ký tự Hoa và thường"],
-            values: req.body
+            values: req.body,
+            dataFinded: dataArr
         });
         return;
     }
-    //kiểm tra email có @
-    if( !email.includes("@") ){
-        res.render("user_add",{
-            errors: ["Email ko đúng định dạng"],
-            values: req.body
-        });
-        return;
-    }
+   
    
     
 
@@ -71,8 +75,10 @@ module.exports.postAddUser = (req, res, next) => {
     let avatar = req.body.avatar;
     if (name.length > 20) {
         errors.push("Tên phải ít hơn 20 kí tự");
-        res.render("user_add", {
-            errors: errors
+        res.render("profile", {
+            errors: errors,
+            dataFinded: dataArr,
+            values: req.body
         });
         return;
     }
@@ -80,7 +86,6 @@ module.exports.postAddUser = (req, res, next) => {
     res.locals.age = age;
     res.locals.gioiTinh = gioiTinh;
     res.locals.password = password;
-    res.locals.email = email;
     res.locals.avatar = req.body.avatar;
     next();
 }
