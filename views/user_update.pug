@@ -13,8 +13,12 @@ block content
       p="Giới Tính:  "+ x.sex
   hr
   h2.text-danger Update User
+  if(errors)
+   each error in errors
+    .alert.alert-danger.w-50= error
   each x in dataFinded  
    form(class="form-group",action="/users/update/" + x.id, method="POST", enctype="multipart/form-data")
+  
           label Tên 
           input(class="form-control w-50",type="text", name="name")
           br

@@ -128,10 +128,11 @@ module.exports.postUpdateUser = async function(req, res, next) {
                 password: hashPass,
                 avatarUrl: uploader.url
             });
+            return res.redirect('/');
         } catch (err) {
             console.log(err);
         }
 
     }
-    res.redirect('/');
+    return res.redirect('/');
 };

@@ -18,5 +18,5 @@ router.get("/delete/:id", user_controller.deleteUser);
 router.get("/detail/:id", user_controller.detailUser);
 //update users
 router.get("/update/:id", user_controller.updateUser);
-router.post("/update/:id", upload.single('avatar'), user_validate.postAddUser ,user_controller.postUpdateUser);
+router.post("/update/:id", upload.single('avatar'), user_validate.postUpdateUserValidate ,user_controller.postUpdateUser);
 module.exports = router;
