@@ -1,12 +1,18 @@
 const express = require("express");
 const router = express.Router();
 const book_controller = require('../controllers/book_controller');
+const validateBook = require("../validate/book_validate");
+//upload file
+var multer = require('multer');
+var upload = multer({
+    dest: './public/uploads/'
+});
 //show books
 router.get("/", book_controller.showBook);
 //show add books
 router.get("/add", book_controller.showAdd);
 //add books
-router.post("/add", book_controller.postAddBook);
+router.post("/add", upload.single('avatarBook'), validateBook.postBook , book_controller.postAddBook);
 //delete books
 router.get("/delete/:id", book_controller.deleteBook);
 //view books

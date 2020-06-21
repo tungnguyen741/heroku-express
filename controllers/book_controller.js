@@ -2,6 +2,14 @@ var Transaction = require('../Models/transaction.model');
 var Book = require('../Models/data.model');
 var User = require('../Models/user.model');
 var Session = require('../Models/session.model');
+
+var cloudinary = require('cloudinary');
+cloudinary.config({
+    cloud_name: process.env.CloudName,
+    api_key: process.env.APIkeyUp,
+    api_secret: process.env.APIsecretUp
+});
+
 module.exports.showBook = async function(req, res) {
     //var dataBook = await Book.find();
     const dataBookPromise = Book.find();
@@ -47,15 +55,23 @@ module.exports.showAdd = (req, res) => {
     res.render("add");
 };
 
-module.exports.postAddBook = (req, res) => {
+module.exports.postAddBook = async (req, res) => {
     let titleAdded = req.body.titleAdded;
     let descriptionAdded = req.body.descriptionAdded;
-    new Book({
+    console.log('FILEEEEEEEEEEE',req.file)
+    try {
+        var uploader = await cloudinary.v2.uploader.upload(req.file.path);
+       
+        await new Book({
             title: titleAdded,
-            description: descriptionAdded
-        })
-        .save()
-        .then(res.redirect("/books"));
+            description: descriptionAdded,
+            image: uploader.url
+        }).save();
+    } catch (err) {
+        console.log(err);
+    }
+ 
+    res.redirect("/books");
 };
 
 module.exports.deleteBook = async function(req, res) {
