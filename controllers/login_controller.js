@@ -12,22 +12,14 @@ module.exports.postLogin = async function(req, res, next) {
         from: 'tung.nguyen21098@gmail.com',
         to: email,
         subject: 'Cảnh báo bạn đăng nhập',
-        html: '<strong>Bạn đã nhập sai mật khẩu quá 3 lần, Vui lòng liên hệ Admin <b><i>tung.nguyen21098@gmail</b></i> để được hỗ trợ!!</strong>',
+        html: '<strong>Bạn đã nhập sai mật khẩu quá 5 lần, Vui lòng liên hệ Admin <b><i>tung.nguyen21098@gmail</b></i> để được hỗ trợ!!</strong>',
     };
     let userLoginTrue = await User.findOne({
         email
     });
     if (!userLoginTrue) {
         res.status(200).render('login', {
-            errors: ["Sai email hoặc mật khẩu. Không đăng nhập được"],
-            values: req.body
-        });
-        return;
-    }
-    if (userLoginTrue.wrongLoginCount >= 5) {
-        sgMail.send(msg);
-        res.status(200).render('login', {
-            errors: ["You have entered it incorrectly many times please contact the admin"],
+            errors: ["Tài khoản chưa được đăng ký."],
             values: req.body
         });
         return;
@@ -47,14 +39,29 @@ module.exports.postLogin = async function(req, res, next) {
             return;
         }
         await User.updateOne({ _id: userLoginTrue._id }, { wrongLoginCount: ++userLoginTrue.wrongLoginCount });
-
-        if (userLoginTrue.wrongLoginCount == 2) {
+        if (userLoginTrue.wrongLoginCount ==5) {
+            sgMail.send(msg);
             res.status(200).render('login', {
-                errors: ["You have entered it incorrectly 2 times, if 3 times email will block !!!"],
+                errors: ["Bạn nhập sai quá 5 lần. Vui lòng liên hệ admin để mở khóa"],
                 values: req.body
             });
             return;
         }
+        if (userLoginTrue.wrongLoginCount == 3) {
+            res.status(200).render('login', {
+                errors: ["Bạn đã nhập sai 3 lần. Nhập sai 5 lần bị khóa tài khoản"],
+                values: req.body
+            });
+            return;
+        }
+         if (userLoginTrue.wrongLoginCount >=5) {
+            sgMail.send(msg);
+            res.status(200).render('login', {
+                errors: ["Bạn nhập sai quá 5 lần. Vui lòng liên hệ admin để mở khóa"],
+                values: req.body
+            });
+            return;
+         }
         res.status(200).render('login', {
             errors: ["Sai email hoặc mật khẩu. Không đăng nhập được"],
             values: req.body
