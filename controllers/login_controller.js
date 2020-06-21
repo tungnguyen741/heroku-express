@@ -19,7 +19,7 @@ module.exports.postLogin = async function(req, res, next) {
     });
     if (!userLoginTrue) {
         res.status(200).render('login', {
-            errors: ["Email. or password wrong !!!"],
+            errors: ["Sai email hoặc mật khẩu. Không đăng nhập được"],
             values: req.body
         });
         return;
@@ -56,7 +56,7 @@ module.exports.postLogin = async function(req, res, next) {
             return;
         }
         res.status(200).render('login', {
-            errors: ["Email or password wrong123 !!!"],
+            errors: ["Sai email hoặc mật khẩu. Không đăng nhập được"],
             values: req.body
         });
     } catch (err) {
