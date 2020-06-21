@@ -18,10 +18,10 @@ block content
   each x in dataFinded  
    form(class="form-group",action="/profile/" + x.id, method="POST", enctype="multipart/form-data")
           label Tên 
-          input(class="form-control w-50",type="text", name="name" ,  value=values?values.name:"")
+          input(class="form-control w-50",type="text", name="name" , value=values?values.name:x.name)
           br
           label Ngày Sinh
-          input(class="form-control w-50",type="date", name="age", value=values?values.age:"")
+          input(class="form-control w-50",type="date", name="age", value=values?values.age:x.age)
           br
           label Mật khẩu cũ
           input(class="form-control w-50",type="password", name="password")

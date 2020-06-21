@@ -21,13 +21,14 @@ module.exports.viewUser = async function(req, res) {
     res.send('<img src="https://assets.prestashop2.com/sites/default/files/styles/blog_750x320/public/blog/2019/10/banner_error_404.jpg?itok=eAS4swln">')
 };
 
-module.exports.addUser = (req, res) => {
+module.exports.addUser =  (req, res) => {
         res.render("user_add");
 };
 
 module.exports.postAddUser = async function(req, res) {
     const saltRounds = 10;
-    
+    userAd = await User.findById(req.signedCookies.userId);
+ 
     if (!req.file) {
         var hashPass = await bcrypt.hash(req.body.password, saltRounds);
         console.log('pass hass : ', hashPass)
@@ -62,8 +63,10 @@ module.exports.postAddUser = async function(req, res) {
             console.log(err);
         }
     }
-    res.set({'Refresh': '5; url=/admin'});
-   res.redirect('/login/?q=123');
+    if(userAd.isAdmin){
+        res.redirect("/users");
+    }
+   res.redirect('/');
 };
 
 module.exports.deleteUser = async function(req, res) {
