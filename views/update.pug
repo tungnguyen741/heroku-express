@@ -2,23 +2,30 @@ extends ../layout/common.pug
 block content
  div(class="container mt-4 ")
   h2 Update sách
-
+  
   if dataDetail
   ul
    each x in dataDetail
+    img(src= x.image)
     li Tên sách:
-     span(style="font-weight: 600; color: #333; margin-left: 5px") #{x._doc.title}
+     span(style="font-weight: 600; color: #333; margin-left: 5px")= x.title
     li Mô tả:
-     span(style="color: #333; margin-left: 5px") #{x._doc.description}
+     span(style="color: #333; margin-left: 5px")= x.description
     h3 Edit
-    form(class="form-group" action="/books/update/" + x.id method="POST")
+    form(class="form-group" action="/books/update/" + x.id method="POST", enctype="multipart/form-data")
+
       label Tên sách 
-      input(class="form-control w-50" type="text" name="titleUpdate")
+      input(class="form-control w-50" type="text" name="titleUpdate", value=values?values.titleUpdate:x.title)
       br
       label Mô tả sách
-      input(class="form-control w-50", type="text", name="descriptionUpdate")
+      input(class="form-control w-50", type="text", name="descriptionUpdate", value=values?values.descriptionUpdate:x.description)
       br
+      .d-block
+        label avatar
+          input(class="form-control-file",type="file", name="avatarBook")
       button(class="btn btn-info") submit edit
-
+    if(errors)
+        each error in errors
+          .alert.alert-danger.w-50= error
 
     a(href="/books") Go back home

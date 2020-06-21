@@ -58,7 +58,7 @@ module.exports.showAdd = (req, res) => {
 module.exports.postAddBook = async (req, res) => {
     let titleAdded = req.body.titleAdded;
     let descriptionAdded = req.body.descriptionAdded;
-    console.log('FILEEEEEEEEEEE',req.file)
+    
     try {
         var uploader = await cloudinary.v2.uploader.upload(req.file.path);
        
@@ -90,7 +90,7 @@ module.exports.deleteBook = async function(req, res) {
 module.exports.viewDetail = async function(req, res) {
     let id = req.params.id;
     let dataDetail = await Book.find({ _id: id });
-    res.render("detail", { dataDetail });
+    res.render("detail", { dataDetail, values:req.body });
 };
 
 module.exports.updateBook = async function(req, res) {
@@ -100,12 +100,21 @@ module.exports.updateBook = async function(req, res) {
 };
 
 module.exports.postUpdateBook = async function(req, res) {
-    await Book.updateOne({ _id: req.params.id }, {
-        title: req.body.titleUpdate,
-        description: req.body.descriptionUpdate
-    });
-
-    res.redirect("/books");
+    let titleAdded = req.body.titleAdded;
+    let descriptionAdded = req.body.descriptionAdded;
+    try {
+        var uploader = await cloudinary.v2.uploader.upload(req.file.path);
+        await Book.updateOne({ _id: req.params.id }, {
+            title: req.body.titleUpdate,
+            description: req.body.descriptionUpdate,
+            image: uploader.url
+        })
+        res.redirect("/");
+    }
+    catch(err){
+        console.log(err);
+    }
+    res.redirect("/");
 };
 
 module.exports.searchBook = async function(req, res) {

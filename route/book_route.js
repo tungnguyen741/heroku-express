@@ -20,6 +20,6 @@ router.get("/detail/:id", book_controller.viewDetail);
 //search books
 router.get("/search", book_controller.searchBook);
 //update books
-router.get("/update/:id", book_controller.updateBook);
-router.post("/update/:id", book_controller.postUpdateBook);
+router.get("/update/:id",    book_controller.updateBook);
+router.post("/update/:id",upload.single('avatarBook'), validateBook.updateBook , book_controller.postUpdateBook);
 module.exports = router;
