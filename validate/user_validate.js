@@ -62,7 +62,7 @@ module.exports.postAddUser = async (req, res, next) => {
      }
 
     //Kiểm tra mật khẩu
-    if( !(password.length >=8 &&  password.toLowerCase().indexOf(password) == -1)){
+    if( !(password.length >=8 &&  password.toLowerCase().indexOf(password) == -1 || password.toUppercase().indexOf(password) == -1) ){
         res.render("user_add",{
             errors: ["Mật khẩu nhiều hơn 8 ký tự, có ký tự Hoa và thường"],
             values: req.body
