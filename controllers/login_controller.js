@@ -13,7 +13,7 @@ module.exports.postLogin = async function(req, res, next) {
         from: "1654052141tung@ou.edu.vn",
         to: email,
         subject: 'Cảnh báo bạn đăng nhập',
-        html: '<strong>Bạn đã nhập sai mật khẩu quá 5 lần, Vui lòng liên hệ Admin <b><i>tung.nguyen21098@gmail</b></i> để được hỗ trợ!!</strong>',
+        html: '<strong>Bạn đã nhập sai mật khẩu quá 5 lần, Vui lòng liên hệ Admin <b><i>"1654052141tung@ou.edu.vn"</b></i> để được hỗ trợ!!</strong>',
     };
 
     let userLoginTrue = await User.findOne({
