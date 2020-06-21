@@ -12,7 +12,7 @@ module.exports.postAddProfile = async (req, res, next) => {
     let age = req.body.age;
     let gioiTinh = req.body.GioiTinh;
     let password = req.body.password;
-    
+    let passwordNew = req.body.passwordNew;
     // Kiểm tra tên ko là số
     stringParse = name.split("");
 
@@ -30,7 +30,7 @@ module.exports.postAddProfile = async (req, res, next) => {
 
 
     // nhập thiếu thông tin
-    if(!name || !age || !gioiTinh ||  !password){
+    if(!name || !age || !gioiTinh ||  !password || !passwordNew){
         errors.push("Ko được để trống các ô")
         res.render("profile", {
             errors,
@@ -56,6 +56,16 @@ module.exports.postAddProfile = async (req, res, next) => {
      }
 
     //Kiểm tra mật khẩu
+     if(password == passwordNew){
+        res.render("profile",{
+            errors: ["Mật khẩu mới ko thể giống mật khẩu cũ"],
+            values: req.body,
+            dataFinded: dataArr
+        });
+        return;
+     }
+
+
     if( !(password.length >=8 &&  password.toLowerCase().indexOf(password) == -1)){
         res.render("profile",{
             errors: ["Mật khẩu nhiều hơn 8 ký tự, có ký tự Hoa và thường"],
@@ -64,8 +74,15 @@ module.exports.postAddProfile = async (req, res, next) => {
         });
         return;
     }
-   
-   
+    
+    if( !(passwordNew.length >=8 &&  passwordNew.toLowerCase().indexOf(passwordNew) == -1)){
+        res.render("profile",{
+            errors: ["Mật khẩu nhiều hơn 8 ký tự, có ký tự Hoa và thường"],
+            values: req.body,
+            dataFinded: dataArr
+        });
+        return;
+    }
     
 
     if (!req.file) {
@@ -86,6 +103,8 @@ module.exports.postAddProfile = async (req, res, next) => {
     res.locals.age = age;
     res.locals.gioiTinh = gioiTinh;
     res.locals.password = password;
+    res.locals.passwordNew = passwordNew;
     res.locals.avatar = req.body.avatar;
+    res.locals.dataFinded = dataArr;
     next();
 }

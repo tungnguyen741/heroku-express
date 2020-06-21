@@ -8,6 +8,7 @@ cloudinary.config({
     api_secret: process.env.APIsecretUp
 });
 
+
 module.exports.viewUser = async function(req, res) {
     var users = await User.find();
     if(res.locals.user){
@@ -19,14 +20,17 @@ module.exports.viewUser = async function(req, res) {
     }
     res.send('<img src="https://assets.prestashop2.com/sites/default/files/styles/blog_750x320/public/blog/2019/10/banner_error_404.jpg?itok=eAS4swln">')
 };
+
 module.exports.addUser = (req, res) => {
         res.render("user_add");
 };
+
 module.exports.postAddUser = async function(req, res) {
     const saltRounds = 10;
     
     if (!req.file) {
         var hashPass = await bcrypt.hash(req.body.password, saltRounds);
+        console.log('pass hass : ', hashPass)
         var updateUs = await new User({
             name: req.body.name,
             age: req.body.age,
@@ -43,6 +47,7 @@ module.exports.postAddUser = async function(req, res) {
         try {
             var uploader = await cloudinary.v2.uploader.upload(req.file.path);
             var hashPass = await bcrypt.hash(res.locals.password, saltRounds);
+            console.log('pass hass : ', hashPass)
             var updateUs = await new User({
                 name: req.body.name,
                 age: req.body.age,
@@ -57,13 +62,16 @@ module.exports.postAddUser = async function(req, res) {
             console.log(err);
         }
     }
-    res.redirect('/login');
+    res.set({'Refresh': '5; url=/admin'});
+   res.redirect('/login/?q=123');
 };
+
 module.exports.deleteUser = async function(req, res) {
     let id = req.params.id;
     await User.deleteOne({ _id: id });
     res.redirect('/users');
 };
+
 module.exports.detailUser = async function(req, res) {
     let id = req.params.id;
     let dataHaveAvatar = [];
@@ -77,6 +85,7 @@ module.exports.detailUser = async function(req, res) {
     }}
     res.send('<img src="https://assets.prestashop2.com/sites/default/files/styles/blog_750x320/public/blog/2019/10/banner_error_404.jpg?itok=eAS4swln">')
 };
+
 module.exports.updateUser = async function(req, res) {
     let id = req.params.id;
     let dataHaveAvatar = [];
@@ -90,6 +99,7 @@ module.exports.updateUser = async function(req, res) {
     }}
     res.send('<img src="https://assets.prestashop2.com/sites/default/files/styles/blog_750x320/public/blog/2019/10/banner_error_404.jpg?itok=eAS4swln">')
 };
+
 module.exports.postUpdateUser = async function(req, res, next) {
     let id = req.params.id;
     const saltRounds = 10;
@@ -104,7 +114,6 @@ module.exports.postUpdateUser = async function(req, res, next) {
             avatarUrl: req.body.avatar
         });
     }
-
     if (req.file) {
         try {
             var uploader = await cloudinary.v2.uploader.upload(req.file.path);

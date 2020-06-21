@@ -4,6 +4,8 @@ const app = express();
 const cors = require('cors');
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
+const morgan = require('morgan');
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -52,10 +54,22 @@ app.use("/profile", session, auth_middleware.checkCookie, profileRoute);
 app.use("/cart", session, cartRoute);
 
 //==== API ====
-app.use("/api/book", apiBookRoute);
+app.use("/api/books", apiBookRoute);
 app.use("/api/transactions", apiTransactionRoute);
 app.use("/api/login", apiLoginRoute);
 app.use("/api/users", apiUserRoute);
+
+// UNIT TEST
+
+//don't show the log when it is test
+if(process.env.NODE_ENV !== 'test') {
+    //use morgan to log at command line
+    app.use(morgan('combined')); //'combined' outputs the Apache style LOGs
+}
+
+module.exports = app; // for testing
+
+//log out
 var Session = require('./Models/session.model');
 app.get("/logout", async function(req, res) {
     res.clearCookie("userId");
@@ -63,6 +77,7 @@ app.get("/logout", async function(req, res) {
     await Session.deleteOne({ sskey: req.signedCookies.sessionId });
     res.redirect("/login");
 });
+
 
 app.listen(port, () => {
     console.log("OK!!!");

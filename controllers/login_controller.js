@@ -35,6 +35,7 @@ module.exports.postLogin = async function(req, res, next) {
     //check pass
     try {
         var truePass = await bcrypt.compare(pass, userLoginTrue.password);
+        console.log('TRUE PASS',truePass)
         if (truePass) {
             await User.updateOne({ _id: userLoginTrue._id }, { wrongLoginCount: 0 });
 

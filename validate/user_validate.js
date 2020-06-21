@@ -1,11 +1,27 @@
-module.exports.postAddUser = (req, res, next) => {
+var User = require('../Models/user.model');
+module.exports.postAddUser = async (req, res, next) => {
     var errors = [];
     let name = req.body.name;
     let age = req.body.age;
     let gioiTinh = req.body.GioiTinh;
     let email = req.body.email;
     let password = req.body.password;
-
+    try {
+        let checkEmail = await User.findOne({ email });
+        console.log(checkEmail);
+        if(checkEmail.email == req.body.email){
+            errors.push("Email đã được đăng ký")
+                res.render("user_add", {
+                    errors,
+                    values: req.body
+                })
+                return;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+    
+   
     // Kiểm tra tên ko là số
     stringParse = name.split("");
 
