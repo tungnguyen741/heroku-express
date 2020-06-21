@@ -1,11 +1,15 @@
 var User = require('../../Models/user.model');
-
+const bcrypt = require('bcrypt')
 module.exports.postLogin = async (req, res, next) => {
   //Login a registered user
   try {
     const { email, password } = req.body
-    const user = await User.findByCredentials(email, password)
+    const user = await User.findByCredentials(email, password);
     if (!user) {
+      return res.status(401).send({error: 'Login failed! Check authentication credentials'})
+  }
+    var truePass = await bcrypt.compare(pass, user.password);
+    if (!truePass) {
         return res.status(401).send({error: 'Login failed! Check authentication credentials'})
     }
     const token = await user.generateAuthToken()

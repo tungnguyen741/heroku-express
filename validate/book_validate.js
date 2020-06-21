@@ -7,8 +7,7 @@ module.exports.postBook =  (req, res, next) =>{
     if(!titleAdded || !descriptionAdded || !req.file){
         res.render('add',{
             errors: ["Không được bỏ trống các ô"],
-            values: req.body,
-            dataDetail
+            values: req.body
         })
         return; 
     }
