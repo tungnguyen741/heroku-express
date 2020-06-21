@@ -2,18 +2,20 @@ const bcrypt = require('bcrypt')
 const sgMail = require('@sendgrid/mail');
 var User = require('../Models/user.model');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY.trim());
-module.exports.login = (req, res, next) => {
-    res.status(200).render('login');
+module.exports.login = async (req, res, next) => {
+     return res.status(200).render('login');
 }
 module.exports.postLogin = async function(req, res, next) {
     let email = req.body.email;
     let pass = req.body.pass;
+
     const msg = {
-        from: 'tung.nguyen21098@gmail.com',
+        from: "1654052141tung@ou.edu.vn",
         to: email,
         subject: 'Cảnh báo bạn đăng nhập',
         html: '<strong>Bạn đã nhập sai mật khẩu quá 5 lần, Vui lòng liên hệ Admin <b><i>tung.nguyen21098@gmail</b></i> để được hỗ trợ!!</strong>',
     };
+
     let userLoginTrue = await User.findOne({
         email
     });
@@ -40,7 +42,16 @@ module.exports.postLogin = async function(req, res, next) {
         }
         await User.updateOne({ _id: userLoginTrue._id }, { wrongLoginCount: ++userLoginTrue.wrongLoginCount });
         if (userLoginTrue.wrongLoginCount ==5) {
-            sgMail.send(msg);
+            try {
+                await sgMail.send(msg);
+        
+              } catch (error) {
+                console.error(error);
+             
+                if (error.response) {
+                  console.error(error.response.body)
+                }
+              }
             res.status(200).render('login', {
                 errors: ["Bạn nhập sai quá 5 lần. Vui lòng liên hệ admin để mở khóa"],
                 values: req.body
@@ -55,7 +66,16 @@ module.exports.postLogin = async function(req, res, next) {
             return;
         }
          if (userLoginTrue.wrongLoginCount >=5) {
-            sgMail.send(msg);
+            try {
+                await sgMail.send(msg);
+        
+              } catch (error) {
+                console.error(error);
+             
+                if (error.response) {
+                  console.error(error.response.body)
+                }
+              }
             res.status(200).render('login', {
                 errors: ["Bạn nhập sai quá 5 lần. Vui lòng liên hệ admin để mở khóa"],
                 values: req.body
