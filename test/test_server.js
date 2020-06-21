@@ -85,7 +85,7 @@ describe('QLTV', () => {
         it('it should POST a single BOOKS on /BOOKS', (done) => {
             let user = {
                 "email": "duy@gmail.com",
-                "password": "Giaduy123",
+                "password": "Giaduy1234",
             };
             chai.request(server)
               .post('/api/login')

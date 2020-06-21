@@ -27,8 +27,8 @@ module.exports.addUser =  (req, res) => {
 
 module.exports.postAddUser = async function(req, res) {
     const saltRounds = 10;
-    userAd = await User.findById(req.signedCookies.userId);
- 
+    const userAd =  User.findById(req.signedCookies.userId);
+    
     if (!req.file) {
         var hashPass = await bcrypt.hash(req.body.password, saltRounds);
         console.log('pass hass : ', hashPass)
@@ -63,10 +63,16 @@ module.exports.postAddUser = async function(req, res) {
             console.log(err);
         }
     }
-    if(userAd.isAdmin){
-        res.redirect("/users");
+    try {
+        var isAd = await userAd;
+        if(isAd.isAdmin){
+            res.redirect("/users");
+        } 
+    } catch (error) {
+        
     }
-   res.redirect('/');
+    
+   res.redirect('/login');
 };
 
 module.exports.deleteUser = async function(req, res) {
