@@ -18,11 +18,14 @@ module.exports.updateBook = async (req, res, next) =>{
     
     //data book detail
     let dataDetail = await Book.find({_id: req.params.id});
-    var titleAdded = req.body.titleAdded;
-    var descriptionAdded = req.body.descriptionAdded;
+    let bookFinded = await Book.findById(req.params.id);
+    console.log(bookFinded);
+    res.locals.dataDetail= bookFinded;
+    var titleUpdate = req.body.titleUpdate;
+    var descriptionUpdate = req.body.descriptionUpdate;
     var avatarBook = req.body.avatarBook;
-    console.log(dataDetail);
-    if(titleAdded=="" || descriptionAdded=="" || !req.file){
+   
+    if(!titleUpdate || !descriptionUpdate){
         res.render("update",{dataDetail, errors: ["Không được để trống các ô"]});
     }
     next();

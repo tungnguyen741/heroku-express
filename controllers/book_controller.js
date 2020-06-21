@@ -100,21 +100,37 @@ module.exports.updateBook = async function(req, res) {
 };
 
 module.exports.postUpdateBook = async function(req, res) {
-    let titleAdded = req.body.titleAdded;
-    let descriptionAdded = req.body.descriptionAdded;
-    try {
-        var uploader = await cloudinary.v2.uploader.upload(req.file.path);
-        await Book.updateOne({ _id: req.params.id }, {
-            title: req.body.titleUpdate,
-            description: req.body.descriptionUpdate,
-            image: uploader.url
-        })
-        res.redirect("/");
+    let titleUpdate = req.body.titleUpdate;
+    let descriptionUpdate = req.body.descriptionUpdate;
+    console.log("TITLE AND DESCRIONNNNNNNNN",titleUpdate,descriptionUpdate);
+    console.log("REQ FILEEEEEEEE",req.params.id);
+    if(req.file){
+        try {
+            var uploader = await cloudinary.v2.uploader.upload(req.file.path);
+            var bookUpdate = await Book.updateOne({ _id: req.params.id }, {
+                title:  titleUpdate,
+                description: descriptionUpdate,
+                image: uploader.url
+            })
+            return res.redirect("/");   
+        } catch (error) {
+            console.log(error);   
+        }
     }
-    catch(err){
-        console.log(err);
-    }
-    res.redirect("/");
+       if(!req.file){
+        try {
+            var bookUpdate = await Book.updateOne({ _id: req.params.id }, {
+                title: titleUpdate,
+                description: descriptionUpdate,
+                image: res.locals.dataDetail.image
+            })
+            return  res.redirect("/");
+        }   
+        catch(err){
+            console.log(err);
+            }         
+        }
+ 
 };
 
 module.exports.searchBook = async function(req, res) {
@@ -125,8 +141,6 @@ module.exports.searchBook = async function(req, res) {
     var start = (page - 1) * items;
     var end = page * items;
     var endPage = Math.floor(dataBook.length / items) + 1;
-
-   
     var dataFiltered = dataBook.filter(product => product.title.toLowerCase().indexOf(q) != -1 ||  product.title.indexOf(q) != -1);
     if (res.locals.user) {
         if (res.locals.user.isAdmin) {

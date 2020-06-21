@@ -106,6 +106,7 @@ module.exports.updateUser = async function(req, res) {
 module.exports.postUpdateUser = async function(req, res, next) {
     let id = req.params.id;
     const saltRounds = 10;
+ 
     if (!req.file) {
         req.body.avatar = "https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png";
         var hashPass = await bcrypt.hash(req.body.password, saltRounds);
