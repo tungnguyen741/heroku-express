@@ -47,11 +47,7 @@ module.exports.postAddUser = async (req, res, next) => {
         return;
     }
     
-   
-
-
-     //kiểm tra năm sinh > 1900
-    
+     //kiểm tra năm sinh > 1900   
      yy = age.split("-");
      if(yy[0] < 1920 || yy[0] >= 2020 ){
          res.render("user_add",{

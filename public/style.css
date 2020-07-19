@@ -80,3 +80,19 @@ i.fas.fa-shopping-cart.text-danger {
     font-size: 26px;
     font-weight: 600;
 }
+img#loadingIcon {
+    width: 15%;
+}
+#overlay {
+    width: 100%;
+    position: relative;
+    top: 0;
+    bottom: 100%;
+    z-index: 10;
+    background: #fff;
+    opacity: 0.5;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

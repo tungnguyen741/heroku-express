@@ -2,6 +2,7 @@ var Transaction = require('../Models/transaction.model');
 var Book = require('../Models/data.model');
 var User = require('../Models/user.model');
 var Session = require('../Models/session.model');
+const dataBookPromise = Book.find();
 
 var cloudinary = require('cloudinary');
 cloudinary.config({
@@ -10,47 +11,53 @@ cloudinary.config({
     api_secret: process.env.APIsecretUp
 });
 
-module.exports.showBook = async function(req, res) {
-    //var dataBook = await Book.find();
-    const dataBookPromise = Book.find();
-   
+module.exports.showBook = async function(req, res, next) {
     var page = parseInt(req.query.page) || 1; //so trang
     var items = 9; // 9 item
     var start = (page - 1) * items;
     var end = page * items;
+    var loading = false;
+   try {
     const dataBook = await dataBookPromise;
     var endPage = Math.floor(dataBook.length / items) + 1;
-
     if (res.locals.user) {
         if (res.locals.user.isAdmin) {
-            res.status(200).render("books", {
+            res.render("books", {
                 books: dataBook.slice(start, end),
                 viewAction: true,
                 user: res.locals.user,
                 page: page,
                 endPage: endPage,
-                sumCart: res.locals.count
+                sumCart: res.locals.count,
+                loading
             });
         }
-        res.status(200).render("books", {
+        res.render("books", {
             books: dataBook.slice(start, end),
             viewAction: false,
             user: res.locals.user,
             page,
             endPage,
-            sumCart: res.locals.count
+            sumCart: res.locals.count,
+            loading
         });
     }
 
-    res.status(200).render("books", {
+    res.render("books", {
         books: dataBook.slice(start, end),
         viewAction: false,
         user: dataBook,
         page,
         endPage,
-        sumCart: res.locals.count
+        sumCart: res.locals.count,
+        loading
     });
+    return next();
+   } catch (error) {
+       console.error(error);
+    }
 }
+
 module.exports.showAdd = (req, res) => {
     res.render("add");
 };
@@ -68,7 +75,7 @@ module.exports.postAddBook = async (req, res) => {
             image: uploader.url
         }).save();
     } catch (err) {
-        console.log(err);
+        console.err(err);
     }
  
     res.redirect("/books");
@@ -76,8 +83,6 @@ module.exports.postAddBook = async (req, res) => {
 
 module.exports.deleteBook = async function(req, res) {
     let id = req.params.id;
-    // await Book.deleteOne({ _id: id });
-    // await Transaction.deleteOne({ bookId: id });
     const bookDelPromise = Book.deleteOne({ _id: id });
     const transDelPromise = Transaction.deleteOne({ bookId: id })
     const bookDel = await bookDelPromise;
@@ -102,8 +107,6 @@ module.exports.updateBook = async function(req, res) {
 module.exports.postUpdateBook = async function(req, res) {
     let titleUpdate = req.body.titleUpdate;
     let descriptionUpdate = req.body.descriptionUpdate;
-    console.log("TITLE AND DESCRIONNNNNNNNN",titleUpdate,descriptionUpdate);
-    console.log("REQ FILEEEEEEEE",req.params.id);
     if(req.file){
         try {
             var uploader = await cloudinary.v2.uploader.upload(req.file.path);
@@ -114,7 +117,7 @@ module.exports.postUpdateBook = async function(req, res) {
             })
             return res.redirect("/");   
         } catch (error) {
-            console.log(error);   
+            console.err(error);   
         }
     }
        if(!req.file){
@@ -127,24 +130,39 @@ module.exports.postUpdateBook = async function(req, res) {
             return  res.redirect("/");
         }   
         catch(err){
-            console.log(err);
+            console.err(err);
             }         
         }
  
 };
 
 module.exports.searchBook = async function(req, res) {
-    let q = req.query.s;    
+    let q = req.query.s.trim();    
     var dataBook = await Book.find();
     var page = parseInt(req.query.page) || 1; //so trang
     var items = 9; // 9 item
     var start = (page - 1) * items;
     var end = page * items;
     var endPage = Math.floor(dataBook.length / items) + 1;
+
+    if(!(q.trim())){
+        res.render("books", {
+            books: 0,
+            viewAction: false,
+            user: dataBook,
+            page,
+            endPage,
+            numResult: 0,
+            valueRecurrent: req.query.s 
+        });
+        return;
+    }
     var dataFiltered = dataBook.filter(product => product.title.toLowerCase().indexOf(q) != -1 ||  product.title.indexOf(q) != -1);
+
+
     if (res.locals.user) {
         if (res.locals.user.isAdmin) {
-            res.status(200).render("books", {
+            res.render("books", {
                 books: dataFiltered,
                 viewAction: true,
                 user: res.locals.user,
@@ -154,7 +172,7 @@ module.exports.searchBook = async function(req, res) {
                 valueRecurrent: req.query.s
             });
         }
-        res.status(200).render("books", {
+        res.render("books", {
             books: dataFiltered,
             viewAction: false,
             user: res.locals.user,
@@ -168,7 +186,7 @@ module.exports.searchBook = async function(req, res) {
     if(dataFiltered.length == 0){
         dataFiltered = false
     }
-    res.status(200).render("books", {
+    res.render("books", {
         books: dataFiltered,
         viewAction: false,
         user: dataBook,
