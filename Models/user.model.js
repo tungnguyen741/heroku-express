@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
- 
+const Schema = mongoose.Schema;
 let userSchema = new mongoose.Schema({
 	name: String,
 	age: String,
@@ -10,7 +10,24 @@ let userSchema = new mongoose.Schema({
 	email: String,
 	isAdmin: Boolean,
 	wrongLoginCount: Number,
-	avatarUrl: String,
+    avatarUrl: String,
+    userName: String,
+    post: [
+        {
+        description: String,
+        imgPostUrl: String,
+        likes:[
+            {
+                userLiked:{type:Schema.Types.ObjectId, ref:'User'},
+            }
+    ],
+        comments:[
+            {
+                userCommented:{type:Schema.Types.ObjectId, ref:'User'},
+                textCommented: String
+            }
+    ]
+        }],
 	tokens: [{
         token: {
             type: String,

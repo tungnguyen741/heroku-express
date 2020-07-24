@@ -38,6 +38,8 @@ const apiBookRoute = require('./api/routes/book_route');
 const apiTransactionRoute = require('./api/routes/transaction_route');
 const apiLoginRoute = require('./api/routes/login_route');
 const apiUserRoute = require('./api/routes/user_route');
+//==== check token =====
+const authencation = require("./middleware/auth_middleware")
 // ==== VIEW ====
 app.set("view engine", "pug");
 app.set("views", "./views");
@@ -54,10 +56,10 @@ app.use("/profile", session, auth_middleware.checkCookie, profileRoute);
 app.use("/cart", session, cartRoute);
 
 //==== API ====
-app.use("/api/books", apiBookRoute);
-app.use("/api/transactions", apiTransactionRoute);
-app.use("/api/login", apiLoginRoute);
-app.use("/api/users", apiUserRoute);
+app.use("/api/books", authencation.authJWT, apiBookRoute);
+app.use("/api/transactions", authencation.authJWT,apiTransactionRoute);
+app.use("/api/login", authencation.authJWT,apiLoginRoute);
+app.use("/api/users", authencation.authJWT,apiUserRoute);
 
 // UNIT TEST
 
