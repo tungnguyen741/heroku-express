@@ -8,8 +8,7 @@ module.exports.postAddUser = async (req, res, next) => {
     let password = req.body.password;
     try {
         let checkEmail = await User.findOne({ email });
-        console.log(checkEmail);
-        if(checkEmail.email == req.body.email){
+         if(checkEmail.email == req.body.email){
             errors.push("Email đã được đăng ký")
                 res.render("user_add", {
                     errors,
@@ -94,6 +93,70 @@ module.exports.postAddUser = async (req, res, next) => {
     res.locals.password = password;
     res.locals.email = email;
     res.locals.avatar = req.body.avatar;
+    next();
+}
+
+module.exports.checkCreateUser = async (req, res, next) => {
+    let name = req.body.name;
+    // let age = req.body.age;
+    // let gioiTinh = req.body.GioiTinh;
+    let email = req.body.email;
+    let password = req.body.password;
+
+    // nhập thiếu thông tin
+    if(!name ||  !email || !password){
+      res.status(500).send("Ko được để trống các ô");
+    }
+    
+    try {
+        let checkEmail = await User.findOne({ email });
+         if(checkEmail.email == req.body.email){
+            res.status(500).send("Tài khoản đã được đăng ký")
+        }
+    } catch (error) {
+        console.error(error.message);
+    }
+    
+    // Kiểm tra tên ko là số
+    stringParse = name.split("");
+
+    stringParse.forEach(item => {
+        if( parseInt(item) ){
+            res.status(500).send("Tên phải là chữ");
+        }
+    });
+
+
+    // nhập thiếu thông tin
+    // if(!name || !age || !gioiTinh || !email || !password){
+    //     res.status(500).send("Ko được để trống các ô");
+    // }
+     //kiểm tra năm sinh > 1900   
+    //  yy = age.split("-");
+    //  if(yy[0] < 1920 || yy[0] >= 2020 ){
+    //     res.status(500).send("Năm sinh ko hợp lệ");
+    //  }
+
+    //kiểm tra email có @
+    if( !(email.includes("@") && email.includes(".")) ){
+        res.status(500).send("Email ko đúng định dạng");
+    }
+    
+    if (name.length > 20) {
+        res.status(500).send("Tên phải ít hơn 20 kí tự");
+    }
+    
+    // var passwordIn = password.toUppercase();
+    //Kiểm tra mật khẩu
+    // if( !(password.length >=8 &&  password.toLowerCase().indexOf(password) == -1 || passwordIn.toUppercase().indexOf(password) == -1) ){
+    //     res.status(500).send("Mật khẩu nhiều hơn 8 ký tự, có ký tự Hoa và thường");
+    // }
+
+    // if (!req.file) {
+    //     req.body.avatar = "https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png";
+    // }
+    
+    
     next();
 }
 

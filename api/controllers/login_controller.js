@@ -12,7 +12,18 @@ module.exports.postLogin = async (req, res, next) => {
         return res.status(401).send({error: 'Login failed! Check authentication credentials'})
     }
     const token = await user.generateAuthToken();
-    res.json({ user, token })
+    res.json({ 
+      accessToken: token, 
+      user: {
+        age: user.age,
+        avatarUrl: user.avatarUrl,
+        email: user.email,
+        name: user.name,
+        sex: user.sex,
+        tokens: user.tokens,
+        _id: user._id
+      }
+    })
 } catch (error) {
     res.status(400).send(error)
 }

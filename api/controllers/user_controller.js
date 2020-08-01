@@ -39,7 +39,16 @@ module.exports.detailUser = async (req, res) =>{
   } catch (error) {
     res.status(500).send(error);
   }
-}
+} 
+
+module.exports.detailUserByE = async (req, res) =>{
+  try {
+     var user = await User.findOne({"email": req.params.email});
+     res.send(user);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+} 
  
 module.exports.deleteUser = async (req, res) =>{
   try {
@@ -57,6 +66,14 @@ module.exports.updateUser = async (req, res) =>{
     var result = await user.save();
     res.send(result);
 
+  } catch (error) {
+    res.status(500).send(error);
+  }
+}
+
+module.exports.cmtPost = async(req, res) => {
+  try {
+    var post = await User.findOne()
   } catch (error) {
     res.status(500).send(error);
   }

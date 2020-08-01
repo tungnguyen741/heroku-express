@@ -56,10 +56,10 @@ app.use("/profile", session, auth_middleware.checkCookie, profileRoute);
 app.use("/cart", session, cartRoute);
 
 //==== API ====
-app.use("/api/books", authencation.authJWT, apiBookRoute);
-app.use("/api/transactions", authencation.authJWT,apiTransactionRoute);
-app.use("/api/login", authencation.authJWT,apiLoginRoute);
-app.use("/api/users", authencation.authJWT,apiUserRoute);
+app.use("/api/books" , apiBookRoute);
+app.use("/api/transactions" ,apiTransactionRoute);
+app.use("/api/login", apiLoginRoute);
+app.use("/api/users", apiUserRoute);
 
 // UNIT TEST
 

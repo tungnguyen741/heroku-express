@@ -13,21 +13,7 @@ let userSchema = new mongoose.Schema({
     avatarUrl: String,
     userName: String,
     post: [
-        {
-        description: String,
-        imgPostUrl: String,
-        likes:[
-            {
-                userLiked:{type:Schema.Types.ObjectId, ref:'User'},
-            }
-    ],
-        comments:[
-            {
-                userCommented:{type:Schema.Types.ObjectId, ref:'User'},
-                textCommented: String
-            }
-    ]
-        }],
+       ],
 	tokens: [{
         token: {
             type: String,
