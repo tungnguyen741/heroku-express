@@ -1,4 +1,4 @@
-# hello-express
+# QuanLyThuVien_ExpressJS
 
 A server that serves a webpage, its resources, and some data
 
