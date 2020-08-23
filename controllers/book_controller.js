@@ -65,7 +65,7 @@ module.exports.showAdd = (req, res) => {
 module.exports.postAddBook = async (req, res) => {
     let titleAdded = req.body.titleAdded;
     let descriptionAdded = req.body.descriptionAdded;
-    
+    console.log(req.file);
     try {
         var uploader = await cloudinary.v2.uploader.upload(req.file.path);
        

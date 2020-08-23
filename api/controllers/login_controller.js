@@ -24,9 +24,9 @@ module.exports.postLogin = async (req, res, next) => {
         _id: user._id
       }
     })
-} catch (error) {
-    res.status(400).send(error)
-}
+  } catch (error) {
+      res.status(400).send(error)
+  }
 }
 
 

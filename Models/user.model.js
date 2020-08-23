@@ -12,9 +12,7 @@ let userSchema = new mongoose.Schema({
 	wrongLoginCount: Number,
     avatarUrl: String,
     userName: String,
-    post: [
-       ],
-	tokens: [{
+    tokens: [{
         token: {
             type: String,
             required: true

@@ -62,7 +62,17 @@ module.exports.deleteUser = async (req, res) =>{
 module.exports.updateUser = async (req, res) =>{
   try {
     var user = await User.findById(req.params.id).exec();
-    user.set(req.body);
+    var hashPass = await bcrypt.hash(req.body.password, 10);
+    user.set({
+      name: req.body.name,
+      age: req.body.age,
+      sex: req.body.GioiTinh,
+      email: req.body.email,
+      password: hashPass,
+      avatarUrl: "https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png",
+      isAdmin: false,
+      wrongLoginCount: 0,
+    });
     var result = await user.save();
     res.send(result);
 
