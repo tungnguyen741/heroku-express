@@ -27,4 +27,7 @@ router.post("/:user_id/unlike", post_controller.unLikePost );
 router.post("/:user_id/isLiked", post_controller.checkIsLiked);
 
 router.post("/:user_id/comment", post_controller.commentPost ); 
+
+router.get("/timeLine/date", post_controller.timeLine);
+
 module.exports = router;

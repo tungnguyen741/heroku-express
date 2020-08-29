@@ -9,7 +9,8 @@ let postSchema = new mongoose.Schema({
     likes:[ { type: Schema.Types.ObjectId, ref: "User"} ],
     imgPostUrl: String,
     description: String,
-    authorID:{  type: Schema.Types.ObjectId, ref: "User"}
+    authorID:{  type: Schema.Types.ObjectId, ref: "User"},
+    datePost: {type: Number ,default: Date.now()}
 });
 
 let Post = mongoose.model('Post', postSchema, 'Posts');

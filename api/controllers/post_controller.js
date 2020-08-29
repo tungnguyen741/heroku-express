@@ -15,22 +15,20 @@ module.exports.viewPost = async function (req, res) {
       res.status(500).send(error);    
     }
   };
-  
+
   //id post,  
 module.exports.viewDetailPost = async (req, res) =>{
-    try {
-       var post = await Post.findById(req.params.id)
+       Post.findById(req.params.id)
        .populate({path: "authorID"})
        .populate("likes")
        .populate({path: "comments.userCommented", model:"User"})
        .exec((err, docs)=>{
-          res.send(docs);
+         if(err){
+           res.status(500).send(err);
+         }
+         res.send(docs);
       })
-      
-        
-    } catch (error) {
-      res.status(500).send(error);
-    }
+  
   } 
 
 module.exports.viewPostOfAuthor = async (req, res) =>{
@@ -53,7 +51,7 @@ module.exports.viewPostOfAuthor = async (req, res) =>{
           description: req.body.description,
           authorID: req.body.authorID
         }).save();
-        console.log(updateUs, uploader.url);
+
         res.status(201).send('successful')
      
       }
@@ -96,5 +94,33 @@ module.exports.viewPostOfAuthor = async (req, res) =>{
       res.status(201).send(post);
     } catch (error) {  
       res.status(500).send(error);
+    }
+  }
+  
+  module.exports.timeLine = (req, res) => {
+    try {
+        Post.find({}).sort({"datePost": -1})
+        .populate({path: "authorID"})
+        .populate("likes")
+        .populate({path: "comments.userCommented", model:"User"})
+        .exec((err, docs)=>{
+        res.status(201).send(docs);
+      })
+      
+    } catch (error) {
+      res.status(500).send(error);
    }
  }
+//  Post.find({}).sort({"datePost": 1}).exec((er,doc) => {
+//    if(er){
+//     //console.log(er)
+//    }
+//    //console.log(doc);
+//  })
+// Post.find({}).sort({"datePost": -1})
+//         .populate({path: "authorID"})
+//         .populate("likes")
+//         .populate({path: "comments.userCommented", model:"User"})
+//         .exec((err, docs)=>{
+//           console.log(docs)
+//         })
