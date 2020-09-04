@@ -1,5 +1,13 @@
 var User = require("../../Models/user.model")
 const bcrypt = require("bcrypt");
+
+var cloudinary = require('cloudinary');
+cloudinary.config({
+    cloud_name: process.env.CloudName,
+    api_key: process.env.APIkeyUp,
+    api_secret: process.env.APIsecretUp
+});
+
 module.exports.viewUser = async function (req, res) {
   try {
     var users = await User.find();
@@ -88,3 +96,15 @@ module.exports.cmtPost = async(req, res) => {
     res.status(500).send(error);
   }
 }
+
+module.exports.changeAvatar = async (req, res) => {
+  try {
+    var uploader = await cloudinary.v2.uploader.upload(req.file.path);
+    var avatarUrl = await User.update({_id: req.params.id}, {$set: {
+      avatarUrl: uploader.url
+    }})
+    res.status(201).send(uploader.url);
+  } catch (error) {
+    res.status(500).send(error);
+ }
+} 

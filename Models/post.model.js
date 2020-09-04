@@ -4,7 +4,8 @@ const jwt = require('jsonwebtoken')
 let postSchema = new mongoose.Schema({
     comments:[{ 
             userCommented: { type: Schema.Types.ObjectId, ref: "User"},
-            textCommented: String
+            textCommented: String,
+            dateComment: {type: Number ,default: Date.now()}
         }],
     likes:[ { type: Schema.Types.ObjectId, ref: "User"} ],
     imgPostUrl: String,

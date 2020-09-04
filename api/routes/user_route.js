@@ -26,4 +26,8 @@ router.put("/:id", authencation.authJWT,user_controller.updateUser);
 
 //cmt a post
 router.patch("/comment:id", authencation.authJWT,user_controller.cmtPost);
+
+//change avatar
+router.post("/:id/avatar",upload.single('avatar'),  user_controller.changeAvatar);
+
 module.exports = router;
