@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(cookieParser(process.env.sessionKey));
-const port = process.env.PORT || 3001;
+const port =  3001;
 // MONGO DB
 const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true });
@@ -39,6 +39,7 @@ const apiTransactionRoute = require('./api/routes/transaction_route');
 const apiLoginRoute = require('./api/routes/login_route');
 const apiUserRoute = require('./api/routes/user_route');
 const apiPostRoute = require('./api/routes/post_route');
+const apiMessengerRoute = require('./api/routes/messenger_route');
 //==== check token =====
 const authencation = require("./middleware/auth_middleware")
 // ==== VIEW ====
@@ -62,6 +63,7 @@ app.use("/api/transactions" ,apiTransactionRoute);
 app.use("/api/login", apiLoginRoute);
 app.use("/api/users", apiUserRoute);
 app.use("/api/post", apiPostRoute);
+app.use("/api/messages", apiMessengerRoute);
 
 // UNIT TEST
 
@@ -82,7 +84,20 @@ app.get("/logout", async function(req, res) {
     res.redirect("/login");
 });
 
-
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log("OK!!!");
 });
+
+var io = require("socket.io")(server);
+io.on('connection', (socket) => {
+    console.log('CONNCETED', socket.id)
+    var messAll = [];
+    socket.on('client-send-message',(data)=>{
+         messAll.push(data);
+        socket.emit('server-send-message', messAll);
+        console.log(messAll, socket.id);
+    })
+})
+// app.get('/messages/t/', (req, res) => {
+  
+// })
