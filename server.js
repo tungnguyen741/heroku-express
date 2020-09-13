@@ -94,7 +94,7 @@ io.on('connection', (socket) => {
     var messAll = [];
     socket.on('client-send-message',(data)=>{
          messAll.push(data);
-        socket.emit('server-send-message', messAll);
+        socket.broadcast.emit('server-send-message', messAll);
         console.log(messAll, socket.id);
     })
 })
