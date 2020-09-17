@@ -23,6 +23,14 @@ db.once('open', function() {
     console.log('CONNECTED Successfully')
 });
 
+//SOCKET IO
+var server = app.listen(port, () => {
+    console.log("OK!!!");
+});
+var io = require("socket.io")(server);
+module.exports = io
+const socket = require('./socket.io');
+ 
 // ==== ROUTE ====
 const userRoute = require("./route/user_route");
 const bookRoute = require("./route/book_route");
@@ -41,6 +49,7 @@ const apiUserRoute = require('./api/routes/user_route');
 const apiPostRoute = require('./api/routes/post_route');
 const apiMessengerRoute = require('./api/routes/messenger_route');
 //==== check token =====
+
 const authencation = require("./middleware/auth_middleware")
 // ==== VIEW ====
 app.set("view engine", "pug");
@@ -84,20 +93,4 @@ app.get("/logout", async function(req, res) {
     res.redirect("/login");
 });
 
-const server = app.listen(port, () => {
-    console.log("OK!!!");
-});
-
-var io = require("socket.io")(server);
-io.on('connection', (socket) => {
-    console.log('CONNCETED', socket.id)
-    var messAll = [];
-    socket.on('client-send-message',(data)=>{
-         messAll.push(data);
-        socket.broadcast.emit('server-send-message', messAll);
-        console.log(messAll, socket.id);
-    })
-})
-// app.get('/messages/t/', (req, res) => {
-  
-// })
+ 

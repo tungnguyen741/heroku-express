@@ -141,3 +141,14 @@ module.exports.viewPostOfAuthor = async (req, res) =>{
 //   })
   
 // } )
+
+
+// io.on('connection', (socket) => {
+//   console.log('CONNCETED', socket.id)
+//   var messAll = [];
+//   socket.on('client-send-message',(data)=>{
+//        messAll.push(data);
+//       socket.broadcast.emit('server-send-message', messAll);
+//       console.log(messAll, socket.id);
+//   })
+// })
